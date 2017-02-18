@@ -1,18 +1,17 @@
 #include <lapacke.h>
 #include "LobattoNodes.hpp"
 #include "Inverse.hpp"
-#include "Display.hpp"
 #include "Transpose.hpp"
 
 
 #ifndef LagrangePolynomials_HPP
 #define LagrangePolynomials_HPP
 
-void lagrangePolynomials(double *Polynomials, unsigned N)
+void lagrangePolynomials(float *Polynomials, unsigned N)
 {
-    double VanderMonde[N+1][N+1];
-    double *Nodes;
-    Nodes   =   new double[N+1];
+    float VanderMonde[N+1][N+1];
+    float *Nodes;
+    Nodes   =   new float[N+1];
     unsigned i,j;
     lobattoNodes(Nodes,N+1);
 

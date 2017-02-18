@@ -5,13 +5,13 @@
 #ifndef LegendrePolynomial_HPP
 #define LegendrePolynomial_HPP
 
-void legendrePolynomial(double *LegPolyn, unsigned int n)
+void legendrePolynomial(float *LegPolyn, unsigned int n)
 {
-	double *LegPolyn_1,*LegPolyn_2,*temp;
+	float *LegPolyn_1,*LegPolyn_2,*temp;
 
-	LegPolyn_1	=	new double [n+1];
-	LegPolyn_2  =	new double [n+1];
-	temp		=	new double [n+1];
+	LegPolyn_1	=	new float [n+1];
+	LegPolyn_2  =	new float [n+1];
+	temp		=	new float [n+1];
     zeros(LegPolyn,n+1);
     zeros(LegPolyn_1,n+1);
     zeros(LegPolyn_2,n+1);
@@ -45,9 +45,9 @@ void legendrePolynomial(double *LegPolyn, unsigned int n)
         }
 
         LegPolyn[0] =    - ((i-1.0)/(i))*LegPolyn_2[0];
-		memcpy(temp,LegPolyn_1,i*(sizeof(double)));
-		memcpy(LegPolyn_1,LegPolyn,(i+1)*sizeof(double));
-		memcpy(LegPolyn_2,temp,(i)*sizeof(double));
+		memcpy(temp,LegPolyn_1,i*(sizeof(float)));
+		memcpy(LegPolyn_1,LegPolyn,(i+1)*sizeof(float));
+		memcpy(LegPolyn_2,temp,(i)*sizeof(float));
 	}
 
 	delete [] LegPolyn_1;

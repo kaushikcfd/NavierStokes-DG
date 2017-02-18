@@ -9,15 +9,15 @@ using namespace std;
 #ifndef LobattoIntegration_HPP
 #define LobattoIntegration_HPP
 
-double lobattoIntegration(double start, double end, unsigned N, function<double(double)> f)
+float lobattoIntegration(float start, float end, unsigned N, function<float(float)> f)
 {
 	N++;
-    double *Nodes,*Weights,*Values;
-    Nodes   =   new double[N];
-    Weights =   new double[N];
-    Values  =   new double[N];
+    float *Nodes,*Weights,*Values;
+    Nodes   =   new float[N];
+    Weights =   new float[N];
+    Values  =   new float[N];
     unsigned i;
-    double integral=0.0;
+    float integral=0.0;
 
     if(start>=end)
 	{

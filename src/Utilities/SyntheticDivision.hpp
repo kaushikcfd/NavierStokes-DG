@@ -4,18 +4,18 @@
 #ifndef SyntheticDivision_HPP
 #define SyntheticDivision_HPP
 
-void syntheticDivision(double *GivenPoly, unsigned deg, double root)
+void syntheticDivision(float *GivenPoly, unsigned deg, float root)
 {
     int i;
-    double *Result;
-    Result = new double [deg];
+    float *Result;
+    Result = new float [deg];
 
 
 	Result[deg-1] = GivenPoly[deg];
 	for(i = deg-2;i>=0;i--)
 		Result[i] = Result[i+1]*root + GivenPoly[i+1];
 
-    memcpy(GivenPoly,Result,deg*(sizeof(double)));
+    memcpy(GivenPoly,Result,deg*(sizeof(float)));
     GivenPoly[deg] = 0;
 
     delete [] Result;

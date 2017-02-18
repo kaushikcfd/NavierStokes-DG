@@ -3,9 +3,9 @@
 #ifndef PolyEval_HPP
 #define PolyEval_HPP
 
-double polyEval(double *GivenPoly, unsigned deg, double x)
+float polyEval(float *GivenPoly, unsigned deg, float x)
 {
-	double Result = GivenPoly[deg];
+	float Result = GivenPoly[deg];
 	for(int i = deg-1;i>=0;i--)
 		Result = Result*x+GivenPoly[i];
 	return Result ;

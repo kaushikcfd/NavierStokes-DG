@@ -6,11 +6,11 @@ using namespace std;
 #ifndef NewtonRaphson_H
 #define NewtonRaphson_H
 
-double newtonRaphson(function<double(double)> func ,double x)
+float newtonRaphson(function<float(float)> func ,float x)
 {
-	double deriv;
-	double x_curr= x;
-	double x_pre = x;
+	float deriv;
+	float x_curr= x;
+	float x_pre = x;
 	do
 	{
 		x_pre = x_curr;
