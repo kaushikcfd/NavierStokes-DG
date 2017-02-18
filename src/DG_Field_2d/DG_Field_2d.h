@@ -9,8 +9,10 @@
 
 #ifndef DG_FIELD_2D_H
 #define DG_FIELD_2D_H
-
+#include <vector>
 #include "../DG_Element_2d/DG_Element_2d.h"
+
+using namespace std;
 
 class DG_Field_2d {
 private:
@@ -19,7 +21,12 @@ private:
     float x1, y1, x2, y2;
 
 public:
+   vector< vector<DG_Element_2d*> > elements;
+    
+
     DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float _x2, float _y2);
+    void addVariable_withBounary(string v);
+    void addVariable_withoutBounary(string v);
 };
 
 #endif

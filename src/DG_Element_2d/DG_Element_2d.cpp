@@ -84,10 +84,10 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
     float **n_bottom    = new float* [N+1];
 
     for(int i=0; i<=N; i++){
-        b_bottom[i] = &(variable[v][i]);    
-        b_top[i]    = &(variable[v][N*(N+1)+i]);
-        b_left[i]   = &(variable[v][i*(N+1)]);
-        b_right[i]  = &(variable[v][i*(N+1)+N]);
+        n_bottom[i] =   b_bottom[i] = &(variable[v][i]);    
+        n_top[i]    =   b_top[i]    = &(variable[v][N*(N+1)+i]);
+        n_left[i]   =   b_left[i]   = &(variable[v][i*(N+1)]);
+        n_right[i]  =   b_right[i]  = &(variable[v][i*(N+1)+N]);
     }
 
 
