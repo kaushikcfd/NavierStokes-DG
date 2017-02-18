@@ -69,8 +69,10 @@ void DG_Element_2d::addVariable_withoutBoundary(string v) {
 void DG_Element_2d::addVariable_withBoundary(string v) {
     float * newVariable = new float[(N+1)*(N+1)]; /// Allocating the space for the new variable which is to be created.
     variable[v] = newVariable; /// Now assigning the same to the map.
-
-    float **b_top       = new float* [N+1];
+    
+    // **b_top is used because it will store the address to the boundary element, So whenever the actual value in the float* of the variable is changed then this will also change automatically. The same holds for all the other following mentioned variables.
+    
+    float **b_top       = new float* [N+1]; 
     float **b_bottom    = new float* [N+1];
     float **b_left      = new float* [N+1];
     float **b_right     = new float* [N+1];
@@ -100,8 +102,7 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
     neighboringBottom[v]= n_bottom;
     neighboringLeft[v]  = n_left;
 
-
-    
+    boundaryVariables.push_back(v);
 
     return ;
 }

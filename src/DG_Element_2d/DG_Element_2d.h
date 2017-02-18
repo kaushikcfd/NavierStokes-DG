@@ -26,6 +26,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -41,7 +42,6 @@ public:
     float *X, *Y;
     map<string, float*> variable; /// This is the map which would contain all the variable that are needed by the problem.
 
-
     map<string, float**> boundaryTop;
     map<string, float**> boundaryRight;
     map<string, float**> boundaryLeft;
@@ -55,6 +55,8 @@ public:
     DG_Element_2d(int _N, float x1, float y1, float x2, float y2);
     void addVariable_withBoundary(string v);
     void addVariable_withoutBoundary(string v);
+    
+    vector<string> boundaryVariables; /// This is the variable which stores the name of all the variables whose boundary and neighboring points are stored. 
 
 };
 
