@@ -51,6 +51,15 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
 
 }
 
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This function adds the variable to each and every element. In this the boundary points are not
+ * specifically stored in each element.
+ *
+ * @Param v This is a string which defines the variable name.
+ */
+/* ----------------------------------------------------------------------------*/
 void DG_Field_2d::addVariable_withBounary(string v) {
     
    for (int i=0; i < ne_x; i++ ){
@@ -62,6 +71,14 @@ void DG_Field_2d::addVariable_withBounary(string v) {
 }
 
 
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is similar to DG_Field_2d::addVariable_withBoundary. Just the boundary points are not specificaly
+ * stored for this variable.
+ *
+ * @Param v This is the name of the variable which is to be added.
+ */
+/* ----------------------------------------------------------------------------*/
 void DG_Field_2d::addVariable_withoutBounary(string v) {
     
    for (int i=0; i < ne_x; i++ ){
@@ -69,5 +86,92 @@ void DG_Field_2d::addVariable_withoutBounary(string v) {
            elements[i][j]->addVariable_withoutBoundary(v); // Adding the variable for the (i, j) th element.
        }
    }
+    return ;
+}
+
+void DG_Field_2d::initializeVariable(string v, function<float(float, float)> f) {
+    
+
+   for (int i=0; i < ne_x; i++ ){
+       for (int j=0; j<ne_y; j++) {
+            elements[i][j]->initializeVariable(v, f); // Initializing the corresponding element by passing the same parameters to it.
+       }
+   }
+
+    return ;
+}
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  Function in order to write the data in the form of VTK file.
+ *
+ * @Param fileName This is the string fileName with which the file is to be saved.
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Field_2d::writeVTK(string fileName){
+    ofstream pFile;
+    pFile.open(fileName);
+    
+    int i, j, k, k1, k2;
+
+    // Printing the preamble for the .vtk file.
+    pFile << "# vtk DataFile Version 3.0\nNavier Stokes DG\nASCII\nDATASET UNSTRUCTURED_GRID\n";
+    // The information of the number of points.
+    pFile << "POINTS\t" << (N+1)*(N+1)*ne_x*ne_y << "\tfloat\n";
+
+    // Writing the point co-ordinates.
+    for ( j = 0; j < ne_y; j++ )
+        for ( i = 0; i < ne_x; i++ )
+            for( k = 0; k < (N+1)*(N+1); k++ )
+                pFile << elements[i][j]->X[k] << "\t" << elements[i][j]->Y[k] << endl;
+
+    pFile << "\n\n";
+
+    // Specifying the information about the CELLS.
+    pFile << "CELLS\t" << (N*N*ne_x*ne_y) <<"\t" << 5*(N*N*ne_x*ne_y) << endl;
+
+    // Writing information about the structure of the cells.
+    for ( i = 0; i < ne_y; i++ ) {
+        for ( j = 0; j < ne_x; j++ ) {
+            for( k1 = 0; k1 < N; k1++ ) {
+                for ( k2 = 0; k2 < N; k2++ ) {
+                    k   =   (i*ne_x+j)*(N+1)*(N+1) +   k1*(N+1)    +   k2;
+                    pFile << 4 << "\t" << k << "\t" << k+1 << "\t" << k+N+2 << "\t" << k+N+1 << endl;
+                }
+            }
+        }
+    }
+    pFile << "\n\n";
+
+    // Specifying the information about the CELL TYPES.
+    pFile << "CELL_TYPES " << (N*N*ne_x*ne_y) << endl;
+
+    // `9` is the CELL TYPE CODE for specifying that it is a quad.
+    for ( i = 0; i < (N*N*ne_x*ne_y); i++)
+        pFile << "9\n";
+    pFile << "\n\n";
+
+    // Specifying the information about the values of the scalars.
+    
+    pFile << "POINT_DATA\t"<< (N+1)*(N+1)*ne_x*ne_y <<"\n";
+    
+    int noOfVars = variableNames.size(); // Getting the number of variables
+    float* currentVariable;
+
+    for(k1=0; k1<noOfVars; k1++) {
+        pFile << "SCALARS\t"<< variableNames[k1] <<"\tfloat\nLOOKUP_TABLE default\n";
+        
+        // Writing the value of the POINT_DATA, for the variable[variableNames[k1]] 
+        for ( j = 0; j < ne_y; j++ ){
+            for ( i = 0; i < ne_x; i++ ) {
+                currentVariable = elements[i][j]->variable[variableNames[k1]];
+                for( k = 0; k < (N+1)*(N+1); k++ ) {
+                    pFile << currentVariable[k] << endl;
+                }
+            }
+        }
+    }
+    pFile.close(); // Closing the file.
     return ;
 }

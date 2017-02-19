@@ -106,3 +106,11 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
 
     return ;
 }
+
+
+void DG_Element_2d::initializeVariable(string v, function<float(float, float)> f) {
+    for(int i=0; i<((N+1)*(N+1)); i++)
+        variable[v][i] = f(X[i], Y[i]);
+    
+    return ;
+}

@@ -27,6 +27,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 using namespace std;
 
@@ -52,11 +53,13 @@ public:
     map<string, float**> neighboringBottom;
     map<string, float**> neighboringLeft;
 
+    vector<string> boundaryVariables; /// This is the variable which stores the name of all the variables whose boundary and neighboring points are stored. 
+
     DG_Element_2d(int _N, float x1, float y1, float x2, float y2);
     void addVariable_withBoundary(string v);
     void addVariable_withoutBoundary(string v);
-    
-    vector<string> boundaryVariables; /// This is the variable which stores the name of all the variables whose boundary and neighboring points are stored. 
+    void initializeVariable(string v, function<float(float, float)> f);
+
 
 };
 

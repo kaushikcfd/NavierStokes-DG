@@ -10,6 +10,9 @@
 #ifndef DG_FIELD_2D_H
 #define DG_FIELD_2D_H
 #include <vector>
+#include <functional>
+#include <fstream>
+
 #include "../DG_Element_2d/DG_Element_2d.h"
 
 using namespace std;
@@ -22,11 +25,14 @@ private:
 
 public:
    vector< vector<DG_Element_2d*> > elements;
-    
+   vector<string> variableNames; // This is stores all the variables which have been added to the field.
+   vector<string> variablesWithBoundaryInfo; // This stores all the variables whose boundary info. is also known.
 
     DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float _x2, float _y2);
     void addVariable_withBounary(string v);
     void addVariable_withoutBounary(string v);
+    void initializeVariable(string v, function<float(float, float)>);
+    void writeVTK(string fileName);
 };
 
 #endif
