@@ -1,4 +1,8 @@
-#include "driver.h"
+/**
+ * @author Kaushik Kulkarni
+ * This file is meant to be a tutorial how a field is initialized, how a variable is added to it. And finally how is it plotted. 
+ */
+#include "plot.h"
 #include <iostream>
 #include <cmath>
 
@@ -10,10 +14,8 @@ float initialPressure(float x, float y) {
 
 int main() {
     DG_Field_2d* P;
-    P = new DG_Field_2d(10, 10, 4, -1.0, -1.0, 1.0, 1.0);
+    P = new DG_Field_2d(10, 10, 2, -1.0, -1.0, 1.0, 1.0); 
     P->addVariable_withoutBounary("Pressure");
     P->initializeVariable("Pressure", initialPressure);
-    P->writeVTK("danda.vtk");
-
-    
+    P->writeVTK("output.vtk");
 }

@@ -67,6 +67,7 @@ void DG_Field_2d::addVariable_withBounary(string v) {
            elements[i][j]->addVariable_withBoundary(v); // Adding the variable for the (i, j) th element.
        }
    }
+   variableNames.push_back(v);
     return ;
 }
 
@@ -86,7 +87,8 @@ void DG_Field_2d::addVariable_withoutBounary(string v) {
            elements[i][j]->addVariable_withoutBoundary(v); // Adding the variable for the (i, j) th element.
        }
    }
-    return ;
+   variableNames.push_back(v);
+   return ;
 }
 
 void DG_Field_2d::initializeVariable(string v, function<float(float, float)> f) {
@@ -124,7 +126,7 @@ void DG_Field_2d::writeVTK(string fileName){
     for ( j = 0; j < ne_y; j++ )
         for ( i = 0; i < ne_x; i++ )
             for( k = 0; k < (N+1)*(N+1); k++ )
-                pFile << elements[i][j]->X[k] << "\t" << elements[i][j]->Y[k] << endl;
+                pFile << elements[i][j]->X[k] << "\t" << elements[i][j]->Y[k] <<"\t"<<0 <<endl;
 
     pFile << "\n\n";
 
