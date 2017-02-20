@@ -5,36 +5,36 @@
 #include "../Utilities/PolyEval.hpp"
 #include "../Utilities/PolyDeriv.hpp"
 #include "../Utilities/LobattoIntegration.hpp"
-#include "MassMatrix.hpp"
+#include "MassMatrix.h"
 
 using namespace std;
 
 #ifndef DerivativeMatrix_HPP
 #define DerivativeMatrix_HPP
 
-void derivativeMatrix(double *DerivativeMatrix,unsigned N)
+void derivativeMatrix(float *DerivativeMatrix,unsigned N)
 {
-    double Poly[N+1][N+1];
-    double **poly, **deriv;
-    poly   =   new double*[N+1];
-    deriv  =   new double*[N+1];
+    float Poly[N+1][N+1];
+    float **poly, **deriv;
+    poly   =   new float*[N+1];
+    deriv  =   new float*[N+1];
     lagrangePolynomials(*Poly,N);
     unsigned i,j;
 
     for(i=0;i<=N;i++)
     {
-        poly[i] =   new double[N+1];
-        deriv[i]=   new double[N];
-        memcpy(poly[i],Poly[i],(N+1)*sizeof(double));
+        poly[i] =   new float[N+1];
+        deriv[i]=   new float[N];
+        memcpy(poly[i],Poly[i],(N+1)*sizeof(float));
         polyDeriv(poly[i],deriv[i],N+1);
     }
 
-    function<double(double)> eval;
+    function<float(float)> eval;
     for(i=0;i<=N;i++)
     {
         for(j=0;j<=N;j++)
         {
-            eval = [&poly,&deriv,&i,&j,&N](double x){return (((polyEval(poly[i],N,x))*(polyEval(deriv[j],N-1,x))));};
+            eval = [&poly,&deriv,&i,&j,&N](float x){return (((polyEval(poly[i],N,x))*(polyEval(deriv[j],N-1,x))));};
             DerivativeMatrix[i*(N+1)+j] = lobattoIntegration(-1.0,1.0,N+1,eval);
         }
     }
@@ -50,10 +50,10 @@ void derivativeMatrix(double *DerivativeMatrix,unsigned N)
     return ;
 }
 
-void twoDDerivativeMatrixX(double *DerivativeMatrix, unsigned N)
+void twoDDerivativeMatrixX(float *DerivativeMatrix, unsigned N)
 {
-    double m[N+1][N+1];
-    double d[N+1][N+1];
+    float m[N+1][N+1];
+    float d[N+1][N+1];
     derivativeMatrix(*d,N);
     massMatrix(*m,N);
 
@@ -67,10 +67,10 @@ void twoDDerivativeMatrixX(double *DerivativeMatrix, unsigned N)
     return ;
 }
 
-void twoDDerivativeMatrixY(double *DerivativeMatrix, unsigned N)
+void twoDDerivativeMatrixY(float *DerivativeMatrix, unsigned N)
 {
-    double m[N+1][N+1];
-    double d[N+1][N+1];
+    float m[N+1][N+1];
+    float d[N+1][N+1];
     derivativeMatrix(*d,N);
     massMatrix(*m,N);
 
