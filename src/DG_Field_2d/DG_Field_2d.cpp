@@ -33,7 +33,8 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
     x2 = _x2;
     y1 = _y1;
     y2 = _y2;
-
+    
+    /// Setting the grid, by setting the elements. The elements are set by providing their end points for the quads.
     elements.resize(ne_x);
 
     float x_curr,y_curr, dx = (x2-x1)/ne_x, dy = (x2-x1)/ne_y;
@@ -47,8 +48,32 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
             y_curr += dy;
         }
         x_curr += dx;
-    }
+    } // All the elements have been initialized.
 
+    /// Setting the interaction between the elements by passing their neighboring elements addresses to each of the
+    //elements.
+    
+    // Setting the top elements of each of the elements.
+    for(int i = 0; i < ne_x; i++)
+        for(int j=0; j < (ne_y-1); j++)
+            elements[i][j]->setNeighboringElement('T', elements[i][j+1]);
+        
+
+    // Setting the right elements of each of the elements.
+    for(int i = 0; i < (ne_x-1); i++)
+        for(int j=0; j < (ne_y); j++)
+            elements[i][j]->setNeighboringElement('R', elements[i+1][j]);
+
+    // Setting the bottom elements of each of the elements.
+    for(int i = 0; i < ne_x; i++)
+        for(int j=1; j < ne_y; j++)
+            elements[i][j]->setNeighboringElement('B', elements[i][j-1]);
+    
+    // Setting the left elements of each of the elements.
+    for(int i = 1; i < ne_x; i++)
+        for(int j=0; j < ne_y; j++)
+            elements[i][j]->setNeighboringElement('L', elements[i-1][j]);
+    // All the neighboring elements have been set, except for the elements at the boundary.
 }
 
 

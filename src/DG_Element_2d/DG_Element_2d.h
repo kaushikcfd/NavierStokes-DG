@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <iostream>
 
 using namespace std;
 
@@ -59,6 +60,7 @@ public:
     void addVariable_withBoundary(string v);
     void addVariable_withoutBoundary(string v);
     void initializeVariable(string v, function<float(float, float)> f);
+    void setNeighboringElement(char type, DG_Element_2d* neighbor );
 
 
 };

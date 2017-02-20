@@ -108,9 +108,62 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
 }
 
 
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  Function to set the value of a variable with the help of a function.
+ *
+ * @Param v This is the name of the variable whose value is to be  set.
+ * @Param f This is the f(x, y) which is used to initialize the variable.
+ */
+/* ----------------------------------------------------------------------------*/
 void DG_Element_2d::initializeVariable(string v, function<float(float, float)> f) {
     for(int i=0; i<((N+1)*(N+1)); i++)
         variable[v][i] = f(X[i], Y[i]);
     
+    return ;
+}
+
+
+void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
+    int i, j;
+    string currentVariable;
+    int noOfBoundaryVariables = boundaryVariables.size();
+    switch(type) {
+        case 't' : // `t` or `T` for top 
+        case 'T' :
+            for(i = 0; i < noOfBoundaryVariables; i++) {
+                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
+                for( j = 0 ; j <= N; j++) 
+                    neighboringTop[currentVariable][j] = neighbor->boundaryBottom[currentVariable][j];
+            }
+
+            break;
+        case 'r' : // `r` or `R` for right
+        case 'R' :
+            for(i = 0; i < noOfBoundaryVariables; i++) {
+                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
+                for( j = 0 ; j <= N; j++) 
+                    neighboringRight[currentVariable][j] = neighbor->boundaryLeft[currentVariable][j];
+            }
+            break;
+        case 'b' : // `b` or `B` for bottom
+        case 'B' :
+            for(i = 0; i < noOfBoundaryVariables; i++) {
+                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
+                for( j = 0 ; j <= N; j++) 
+                    neighboringBottom[currentVariable][j] = neighbor->boundaryTop[currentVariable][j];
+            }
+            break;
+        case 'l' : // `l` or `L` for left
+        case 'L' :
+            for(i = 0; i < noOfBoundaryVariables; i++) {
+                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
+                for( j = 0 ; j <= N; j++) 
+                    neighboringLeft[currentVariable][j] = neighbor->boundaryRight[currentVariable][j];
+            }
+            break;
+        default:
+            cout << "WARNING!. No such neighbor type " << type << endl;
+    }
     return ;
 }

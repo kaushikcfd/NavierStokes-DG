@@ -22,6 +22,9 @@ private:
     int N; /// The order of the polynomial of interpolation.
     int ne_x, ne_y; /// Since this is a structured grid we can define the grid with the help of number of elements in the x-direction and in the y-direction.
     float x1, y1, x2, y2;
+    float *derivativeMatrix_x = NULL; /// This is the matrix which is laid out in 1-D, this would help us to find the $\frac{d}{dx}$ of any term.
+    float *derivativeMatrix_y = NULL; /// This is the matrix which is laid out in 1-D, this would help us to find the $\frac{d}{dy}$ of any term.
+
 
 public:
    vector< vector<DG_Element_2d*> > elements;
