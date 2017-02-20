@@ -38,6 +38,9 @@ DG_Element_2d::DG_Element_2d(int _N, float x1, float y1, float x2, float y2) {
         }
     }
 
+    
+
+
     delete[] nodes;
 
 }
@@ -167,3 +170,82 @@ void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
     }
     return ;
 }
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function to get the variable `v` differentiated partially w.r.t. `x` and then store it in the
+ * variable `vDash`. The function also takes `fluxType` as an input which would describe the numerical scheme that
+ * should be used in order to obtain the derivative.
+ *
+ * @Param v         Variable which is to be differentiated.
+ * @Param vDash     Variable in which the derivative is to be stored.
+ * @Param fluxType  The type of flux that is to be used. eg "central"
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
+    if(fluxType == "central") {
+        
+    }
+
+}
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This function takes Mass Matrix as an input
+ *
+ * @Param m This is the massMatix array(actually a matrix, but implemented as a 1-d array).
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::setMassMatrix(float *m) {
+    massMatrix = m;
+    return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  Function to set the x-derivative matrix.
+ *
+ * @Param d The array of the x-derivative matrix which is given as an input.
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::setderivateMatrix_x(float *d) {
+    derivativeMatrix_x = d;
+    return ;
+}
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  Function to set the y-derivative matrix.
+ *
+ * @Param d The array of the y-derivative matrix which is given as an input.
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::setderivateMatrix_y(float *d) {
+    derivativeMatrix_y = d;
+    return ;
+}
+
+/***THE FOLLOWING 4 FUNCTIONS HAVE THE SIMILAR JOB TO SET THE FLUX MATRICES.****/
+
+void DG_Element_2d::setTopFluxMatrix(float* f) {
+    fluxMatrix_top = f;
+    return ;
+}
+void DG_Element_2d::setRightFluxMatrix(float* f){
+    fluxMatrix_right = f;
+    return ;
+}
+
+void DG_Element_2d::setLeftFluxMatrix(float* f){
+    fluxMatrix_left = f;
+    return ;
+}
+
+void DG_Element_2d::setBottomFluxMatrix(float* f){
+    fluxMatrix_bottom = f;
+    return ;
+}
+

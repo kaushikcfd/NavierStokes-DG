@@ -74,6 +74,43 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
         for(int j=0; j < ne_y; j++)
             elements[i][j]->setNeighboringElement('L', elements[i-1][j]);
     // All the neighboring elements have been set, except for the elements at the boundary.
+    
+    /// Computing and passing the mass matrices, derivative and flux matrices to each and every element.
+    /// The main use of this step is to ensure that each and every elements is not computing the same matrices.
+    
+    /// Assigning spaces to those matrices.
+    float *massMatrix = new float[(N+1)*(N+1)];
+    float *derivativeMatrix_x = new float[(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
+    float *derivativeMatrix_y = new float[(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
+    float* fluxMatrix_top = new float[(N+1)*(N+1)] ; /// This is the flux matrix for the top edge.
+    float* fluxMatrix_right = new float[(N+1)*(N+1)] ; // The Flux Matrix for the right edge.
+    float* fluxMatrix_bottom = new float[(N+1)*(N+1)] ; /// This would be the flux term for the the bottom edge.
+    float* fluxMatrix_left = new float[(N+1)*(N+1)] ; /// The Flux matrix for the left edge.
+    
+    /// Calling functions to compute the entries of the matrix.
+    
+    twoDMassMatrix(massMatrix, N);
+    twoDDerivativeMatrixX(derivativeMatrix_x, N);
+    twoDDerivativeMatrixY(derivativeMatrix_y, N);
+    
+    twoDFluxMatrix3(fluxMatrix_top, N);
+    twoDFluxMatrix2(fluxMatrix_right, N);
+    twoDFluxMatrix4(fluxMatrix_left, N);
+    twoDFluxMatrix1(fluxMatrix_bottom, N);
+
+    /// Assigning the computed matrices to each and every element.
+    for(int i = 0; i < ne_x; i++)
+        for(int j=0; j < ne_y; j++){
+            elements[i][j]->setMassMatrix(massMatrix);
+            elements[i][j]->setderivateMatrix_x(derivativeMatrix_x);
+            elements[i][j]->setderivateMatrix_y(derivativeMatrix_y);
+            elements[i][j]->setTopFluxMatrix(fluxMatrix_top);
+            elements[i][j]->setRightFluxMatrix(fluxMatrix_right);
+            elements[i][j]->setLeftFluxMatrix(fluxMatrix_left);
+            elements[i][j]->setBottomFluxMatrix(fluxMatrix_bottom);
+        }
+
+    
 }
 
 

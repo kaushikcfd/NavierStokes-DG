@@ -30,6 +30,10 @@
 #include <functional>
 #include <iostream>
 
+#include "../DG_OperatorMatrices_2d/FluxMatrix.h"
+#include "../DG_OperatorMatrices_2d/MassMatrix.h"
+#include "../DG_OperatorMatrices_2d/DerivativeMatrix.h"
+
 using namespace std;
 
 
@@ -38,6 +42,13 @@ private:
     
     int N; /// This represents the order of polynomial interpolation which is done while solving the DG equations.
     float x_start, x_end, y_start, y_end; /// Since, this is a structured rectangular element. These variables define the position and size of the element.
+    float *massMatrix = NULL;
+    float *derivativeMatrix_x = NULL; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
+    float *derivativeMatrix_y = NULL; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
+    float* fluxMatrix_top = NULL; /// This is the flux matrix for the top edge.
+    float* fluxMatrix_right = NULL; // The Flux Matrix for the right edge.
+    float* fluxMatrix_bottom = NULL; /// This would be the flux term for the the bottom edge.
+    float* fluxMatrix_left = NULL; /// The Flux matrix for the left edge.
 
 public:
 
@@ -61,6 +72,18 @@ public:
     void addVariable_withoutBoundary(string v);
     void initializeVariable(string v, function<float(float, float)> f);
     void setNeighboringElement(char type, DG_Element_2d* neighbor );
+
+    // Functions for various operations on the variables.
+    void delByDelX(string v, string vDash, string fluxType);
+
+    // Functions to set the various operator matrices.
+    void setMassMatrix(float* m);
+    void setderivateMatrix_x(float* d);
+    void setderivateMatrix_y(float* d);
+    void setTopFluxMatrix(float* f);
+    void setRightFluxMatrix(float* f);
+    void setLeftFluxMatrix(float* f);
+    void setBottomFluxMatrix(float* f);
 
 
 };
