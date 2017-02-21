@@ -6,7 +6,14 @@
  * @date 2017-02-18
  */
 
-#include "DG_Field_2d.h"
+#include "../../include/DG_Field_2d/DG_Field_2d.h"
+#include "../../include/DG_Element_2d/DG_Element_2d.h"
+
+#include "../../include/Utilities/Inverse.h"
+#include "../../include/Utilities/DerivativeMatrix.h"
+#include "../../include/Utilities/MassMatrix.h"
+#include "../../include/Utilities/FluxMatrix.h"
+
 
 
 /* ----------------------------------------------------------------------------*/

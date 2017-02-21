@@ -1,4 +1,14 @@
-#include "DG_Element_2d.h"
+#include "../../include/DG_Element_2d/DG_Element_2d.h"
+
+#include "../../include/Utilities/Zeros.h"
+#include "../../include/Utilities/Inverse.h"
+
+#include "../../include/Utilities/FluxMatrix.h"
+#include "../../include/Utilities/MassMatrix.h"
+#include "../../include/Utilities/DerivativeMatrix.h"
+#include "../../include/Utilities/LobattoNodes.h"
+
+
 
 /* ----------------------------------------------------------------------------*/
 /**
@@ -36,10 +46,21 @@ DG_Element_2d::DG_Element_2d(int _N, float x1, float y1, float x2, float y2) {
         }
     }
 
-    
-
-
     delete[] nodes;
+
+    massMatrix = NULL;
+
+    derivativeMatrix_x  =   NULL;
+    derivativeMatrix_y  =   NULL; 
+    fluxMatrix_top      =   NULL;
+    fluxMatrix_right    =   NULL;
+    fluxMatrix_bottom   =   NULL;
+    fluxMatrix_left     =   NULL;
+    inverseMassMatrix   =   NULL;
+    topNeighbor         =   NULL;
+    rightNeighbor       =   NULL;
+    leftNeighbor        =   NULL;
+    bottomNeighbor      =   NULL;
 
 }
 
@@ -132,15 +153,15 @@ void DG_Element_2d::setVariableNeighbors(string v) {
     }
     if(rightNeighbor!=NULL) {
         for( j = 0 ; j <= N; j++) 
-            neighboringRight[v][j] = topNeighbor->boundaryLeft[v][j];
+            neighboringRight[v][j] = rightNeighbor->boundaryLeft[v][j];
     }
     if(leftNeighbor!=NULL) {
         for( j = 0 ; j <= N; j++) 
-            neighboringLeft[v][j] = topNeighbor->boundaryRight[v][j];
+            neighboringLeft[v][j] = leftNeighbor->boundaryRight[v][j];
     }
     if(bottomNeighbor!=NULL) {
         for( j = 0 ; j <= N; j++) 
-            neighboringBottom[v][j] = topNeighbor->boundaryTop[v][j];
+            neighboringBottom[v][j] = bottomNeighbor->boundaryTop[v][j];
     }
     return ;
 }
@@ -284,4 +305,3 @@ void DG_Element_2d::setBottomFluxMatrix(float* f){
     fluxMatrix_bottom = f;
     return ;
 }
-
