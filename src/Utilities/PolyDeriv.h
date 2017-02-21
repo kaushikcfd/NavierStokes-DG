@@ -1,7 +1,5 @@
-#include <lapacke.h>
-
-#ifndef PolyDeriv_HPP
-#define PolyDeriv_HPP
+#ifndef POLYDERIV_H
+#define POLYDERIV_H
 
 void polyDeriv(float *GivenPoly, float *DerivedPoly, unsigned deg)
 {

@@ -6,9 +6,6 @@
   * @version 1.0
   * @date 2017-02-18
   */
-
-#ifndef DG_FIELD_2D_H
-#define DG_FIELD_2D_H
 #include <vector>
 #include <functional>
 #include <fstream>
@@ -18,9 +15,10 @@
 #include "../DG_OperatorMatrices_2d/MassMatrix.h"
 #include "../DG_OperatorMatrices_2d/FluxMatrix.h"
 
-
-
 using namespace std;
+
+#ifndef DG_FIELD_2D_H
+#define DG_FIELD_2D_H
 
 class DG_Field_2d {
 private:
@@ -39,6 +37,8 @@ public:
     void addVariable_withoutBounary(string v);
     void initializeVariable(string v, function<float(float, float)>);
     void writeVTK(string fileName);
+
+    void delBydelX(string v, string vDash, string fluxType);
 };
 
 #endif

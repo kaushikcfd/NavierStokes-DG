@@ -1,7 +1,5 @@
-#include <lapacke.h>
-
-#ifndef Zeros_HPP
-#define Zeros_HPP
+#ifndef ZEROS_H
+#define ZEROS_H
 
 void zeros(float *x, unsigned n)
 {
@@ -16,6 +14,5 @@ void zeros(float *A, unsigned m, unsigned n)
     for(i=0;i<m*n;i++)
             A[i] = 0.0;
 }
-
 
 #endif

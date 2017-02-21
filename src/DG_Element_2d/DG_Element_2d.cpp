@@ -1,6 +1,4 @@
 #include "DG_Element_2d.h"
-#include "../Utilities/LobattoNodes.hpp"
-
 
 /* ----------------------------------------------------------------------------*/
 /**
@@ -110,7 +108,6 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
     return ;
 }
 
-
 /* ----------------------------------------------------------------------------*/
 /**
  * @Synopsis  Function to set the value of a variable with the help of a function.
@@ -127,43 +124,56 @@ void DG_Element_2d::initializeVariable(string v, function<float(float, float)> f
 }
 
 
+void DG_Element_2d::setVariableNeighbors(string v) {
+    int j;
+    if(topNeighbor!=NULL) {
+        for( j = 0 ; j <= N; j++) 
+            neighboringTop[v][j] = topNeighbor->boundaryBottom[v][j];
+    }
+    if(rightNeighbor!=NULL) {
+        for( j = 0 ; j <= N; j++) 
+            neighboringRight[v][j] = topNeighbor->boundaryLeft[v][j];
+    }
+    if(leftNeighbor!=NULL) {
+        for( j = 0 ; j <= N; j++) 
+            neighboringLeft[v][j] = topNeighbor->boundaryRight[v][j];
+    }
+    if(bottomNeighbor!=NULL) {
+        for( j = 0 ; j <= N; j++) 
+            neighboringBottom[v][j] = topNeighbor->boundaryTop[v][j];
+    }
+    return ;
+}
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This function sets the boundary variables for an element. This must be called whenever a new variable with
+ * boundary is added. 
+ *
+ * @Param v The variable whose information about the boundaries is to be stored
+ * @Param type The type of the neighbor whose information is to be looked upon.
+ * @Param neighbor The pointer to the element 
+ */
+/* ----------------------------------------------------------------------------*/
 void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
-    int i, j;
     string currentVariable;
-    int noOfBoundaryVariables = boundaryVariables.size();
     switch(type) {
         case 't' : // `t` or `T` for top 
         case 'T' :
-            for(i = 0; i < noOfBoundaryVariables; i++) {
-                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
-                for( j = 0 ; j <= N; j++) 
-                    neighboringTop[currentVariable][j] = neighbor->boundaryBottom[currentVariable][j];
-            }
-
+            topNeighbor = neighbor;
             break;
         case 'r' : // `r` or `R` for right
         case 'R' :
-            for(i = 0; i < noOfBoundaryVariables; i++) {
-                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
-                for( j = 0 ; j <= N; j++) 
-                    neighboringRight[currentVariable][j] = neighbor->boundaryLeft[currentVariable][j];
-            }
+            rightNeighbor = neighbor;
             break;
         case 'b' : // `b` or `B` for bottom
         case 'B' :
-            for(i = 0; i < noOfBoundaryVariables; i++) {
-                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
-                for( j = 0 ; j <= N; j++) 
-                    neighboringBottom[currentVariable][j] = neighbor->boundaryTop[currentVariable][j];
-            }
+            bottomNeighbor = neighbor;
             break;
         case 'l' : // `l` or `L` for left
         case 'L' :
-            for(i = 0; i < noOfBoundaryVariables; i++) {
-                currentVariable = boundaryVariables[i]; // This is the current variable whose addresses are to be copied.
-                for( j = 0 ; j <= N; j++) 
-                    neighboringLeft[currentVariable][j] = neighbor->boundaryRight[currentVariable][j];
-            }
+            leftNeighbor = neighbor;
             break;
         default:
             cout << "WARNING!. No such neighbor type " << type << endl;
@@ -184,8 +194,29 @@ void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
  */
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
+    float dy = (y_end - y_start);
+    float dx = (x_end - x_start);
+
     if(fluxType == "central") {
-        
+        float* numericalFlux        =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        float* auxillaryVariable    =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        zeros(numericalFlux, (N+1)*(N+1));                                                       
+        for(int i=0; i<=N; i++){
+            numericalFlux[N*(N+1)+i]    = 0.5*( *boundaryRight[v][i]    + *neighboringRight[v][i] ) ;   
+            numericalFlux[i*(N+1)+N]    = 0.5*( *boundaryLeft[v][i]     + *neighboringLeft[v][i] ) ;  
+        }
+        /// vDash = -0.5*dy*D*v
+        cblas_sgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dy, derivativeMatrix_x, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+
+        /// Adding the numeical Flux terms as necessary.
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dy, fluxMatrix_right,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),   0.5*dy, fluxMatrix_left,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+
+        /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+
+        delete[] numericalFlux;
+        delete[] auxillaryVariable;
     }
 
 }
@@ -200,6 +231,11 @@ void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::setMassMatrix(float *m) {
     massMatrix = m;
+    return ;
+}
+
+void DG_Element_2d::setInverseMassMatrix(float* im) {
+    inverseMassMatrix = im;
     return ;
 }
 

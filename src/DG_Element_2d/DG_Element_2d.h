@@ -21,21 +21,25 @@
      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  **AS IS** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      */
 
-#ifndef DG_ELEMENT_2D_H
-#define DG_ELEMENT_2D_H
-
 #include <map>
 #include <string>
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <cblas.h>
+
+#include "../Utilities/Zeros.h"
+#include "../Utilities/Inverse.h"
 
 #include "../DG_OperatorMatrices_2d/FluxMatrix.h"
 #include "../DG_OperatorMatrices_2d/MassMatrix.h"
 #include "../DG_OperatorMatrices_2d/DerivativeMatrix.h"
+#include "../Utilities/LobattoNodes.h"
 
 using namespace std;
 
+#ifndef DG_ELEMENT_2D_H
+#define DG_ELEMENT_2D_H
 
 class DG_Element_2d {
 private:
@@ -49,6 +53,12 @@ private:
     float* fluxMatrix_right = NULL; // The Flux Matrix for the right edge.
     float* fluxMatrix_bottom = NULL; /// This would be the flux term for the the bottom edge.
     float* fluxMatrix_left = NULL; /// The Flux matrix for the left edge.
+    float* inverseMassMatrix = NULL; /// The inverse of the mass matrix is also created only once in the field function. And just passed to each element.
+     
+    DG_Element_2d* topNeighbor = NULL;
+    DG_Element_2d* rightNeighbor = NULL;
+    DG_Element_2d* leftNeighbor = NULL;
+    DG_Element_2d* bottomNeighbor = NULL;
 
 public:
 
@@ -72,12 +82,14 @@ public:
     void addVariable_withoutBoundary(string v);
     void initializeVariable(string v, function<float(float, float)> f);
     void setNeighboringElement(char type, DG_Element_2d* neighbor );
+    void setVariableNeighbors(string v);
 
     // Functions for various operations on the variables.
     void delByDelX(string v, string vDash, string fluxType);
 
     // Functions to set the various operator matrices.
     void setMassMatrix(float* m);
+    void setInverseMassMatrix(float* im);
     void setderivateMatrix_x(float* d);
     void setderivateMatrix_y(float* d);
     void setTopFluxMatrix(float* f);

@@ -1,10 +1,10 @@
 #include <lapacke.h>
 #include <cstring>
-#include <cstdio>
-#include "Display.hpp"
+#include <iostream>
+using namespace std;
 
-#ifndef SolveAxb_HPP
-#define SolveAxb_HPP
+#ifndef SOLVEAXB_H
+#define SOLVEAXB_H
 
 void solveAxb(float *A, float *x, float *b, unsigned N)
 {
@@ -17,7 +17,7 @@ void solveAxb(float *A, float *x, float *b, unsigned N)
 
     info    =   LAPACKE_sgesv(LAPACK_ROW_MAJOR,N,1,B,N,ipiv,c,1);
     if(info!=0)
-        fprintf(stderr,"The Linear solve `Ax=b` was not succesful.\n");
+        cerr << "The Linear solve `Ax=b` was not succesful.\n";
    
     memcpy(x,c,N*sizeof(float));
 
@@ -25,7 +25,5 @@ void solveAxb(float *A, float *x, float *b, unsigned N)
     delete[] c;
     return ;
 }
-
-
 
 #endif

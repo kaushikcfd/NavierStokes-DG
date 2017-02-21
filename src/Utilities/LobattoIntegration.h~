@@ -1,13 +1,10 @@
 #include <lapacke.h>
 #include <functional>
-#include "LobattoNodes.hpp"
-#include "LobattoWeights.hpp"
-#include "PolyEval.hpp"
+#include "LobattoNodes.h"
+#include "LobattoWeights.h"
+#include "PolyEval.h"
 
 using namespace std;
-
-#ifndef LobattoIntegration_HPP
-#define LobattoIntegration_HPP
 
 float lobattoIntegration(float start, float end, unsigned N, function<float(float)> f)
 {

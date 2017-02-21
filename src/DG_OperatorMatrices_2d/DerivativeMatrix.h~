@@ -1,3 +1,6 @@
+#ifndef DERIVATIVEMATRIX_H
+#define DERIVATIVEMATRIX_H
+
 #include <lapacke.h>
 #include <functional>
 #include <cstring>
@@ -8,9 +11,6 @@
 #include "MassMatrix.h"
 
 using namespace std;
-
-#ifndef DERIVATIVEMATRIX_H
-#define DERIVATIVEMATRIX_H
 
 void derivativeMatrix(float *DerivativeMatrix,unsigned N)
 {

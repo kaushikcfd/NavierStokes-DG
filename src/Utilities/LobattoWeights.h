@@ -1,13 +1,13 @@
 #include <lapacke.h>
 #include <functional>
 
-#include "LobattoNodes.hpp"
-#include "PolyEval.hpp"
-#include "PolyDeriv.hpp"
-#include "LegendrePolynomial.hpp"
+#include "LobattoNodes.h"
+#include "PolyEval.h"
+#include "PolyDeriv.h"
+#include "LegendrePolynomial.h"
 
-#ifndef LobattoWeights_HPP
-#define LobattoWeights_HPP
+#ifndef LOBATTOWEIGHTS_H
+#define LOBATTOWEIGHTS_H
 
 void lobattoWeights(float *Weights, unsigned N)
 {

@@ -1,15 +1,16 @@
 #include <lapacke.h>
-#include "LegendrePolynomial.hpp"
-#include "PolyEval.hpp"
-#include "PolyDeriv.hpp"
-#include "SyntheticDivision.hpp"
-#include "NewtonRaphson.hpp"
 #include <algorithm>
 #include <functional>
+
+#include "LegendrePolynomial.h"
+#include "PolyEval.h"
+#include "PolyDeriv.h"
+#include "SyntheticDivision.h"
+#include "NewtonRaphson.h"
 using namespace std;
 
-#ifndef LobattoNodes_HPP
-#define LobattoNodes_HPP
+#ifndef LOBATTONODES_H
+#define LOBATTONODES_H
 
 void lobattoNodes(float *Nodes, unsigned N)
 {
@@ -38,6 +39,5 @@ void lobattoNodes(float *Nodes, unsigned N)
     delete[] Poly;
     delete[] DerivedPoly;
 }
-
 
 #endif

@@ -79,17 +79,19 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
     /// The main use of this step is to ensure that each and every elements is not computing the same matrices.
     
     /// Assigning spaces to those matrices.
-    float *massMatrix = new float[(N+1)*(N+1)];
-    float *derivativeMatrix_x = new float[(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
-    float *derivativeMatrix_y = new float[(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
-    float* fluxMatrix_top = new float[(N+1)*(N+1)] ; /// This is the flux matrix for the top edge.
-    float* fluxMatrix_right = new float[(N+1)*(N+1)] ; // The Flux Matrix for the right edge.
-    float* fluxMatrix_bottom = new float[(N+1)*(N+1)] ; /// This would be the flux term for the the bottom edge.
-    float* fluxMatrix_left = new float[(N+1)*(N+1)] ; /// The Flux matrix for the left edge.
+    float *massMatrix = new float[(N+1)*(N+1)*(N+1)*(N+1)];
+    float *derivativeMatrix_x = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
+    float *derivativeMatrix_y = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
+    float* fluxMatrix_top = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the flux matrix for the top edge.
+    float* fluxMatrix_right = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; // The Flux Matrix for the right edge.
+    float* fluxMatrix_bottom = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This would be the flux term for the the bottom edge.
+    float* fluxMatrix_left = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// The Flux matrix for the left edge.
+    float* massInverse = new float[(N+1)*(N+1)*(N+1)*(N+1)] ;
     
     /// Calling functions to compute the entries of the matrix.
     
     twoDMassMatrix(massMatrix, N);
+    inverse(massMatrix,massInverse,(N+1)*(N+1));
     twoDDerivativeMatrixX(derivativeMatrix_x, N);
     twoDDerivativeMatrixY(derivativeMatrix_y, N);
     
@@ -102,6 +104,7 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
     for(int i = 0; i < ne_x; i++)
         for(int j=0; j < ne_y; j++){
             elements[i][j]->setMassMatrix(massMatrix);
+            elements[i][j]->setInverseMassMatrix(massInverse);
             elements[i][j]->setderivateMatrix_x(derivativeMatrix_x);
             elements[i][j]->setderivateMatrix_y(derivativeMatrix_y);
             elements[i][j]->setTopFluxMatrix(fluxMatrix_top);
@@ -127,6 +130,11 @@ void DG_Field_2d::addVariable_withBounary(string v) {
    for (int i=0; i < ne_x; i++ ){
        for (int j=0; j<ne_y; j++) {
            elements[i][j]->addVariable_withBoundary(v); // Adding the variable for the (i, j) th element.
+       }
+   }
+   for (int i=0; i < ne_x; i++ ){
+       for (int j=0; j<ne_y; j++) {
+           elements[i][j]->setVariableNeighbors(v); // This is essential so that the addresses of the neighbors are stored in each and every element.
        }
    }
    variableNames.push_back(v);
@@ -237,5 +245,24 @@ void DG_Field_2d::writeVTK(string fileName){
         }
     }
     pFile.close(); // Closing the file.
+    return ;
+}
+
+
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function to operate the partial derivative of the variable w.r.t. x.
+ *
+ * @Param v The variable which is to be differentiated
+ * @Param vDash The variable in which the differentiated value is to be stored.
+ * @Param fluxType The numerical flux type which is to be implemented while computing the derivative.
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Field_2d::delBydelX(string v, string vDash, string fluxType) {
+    for(int i = 0; i < ne_x; i++ )
+        for(int j = 0; j < ne_y; j++)
+            elements[i][j]->delByDelX(v, vDash, fluxType);
+
     return ;
 }

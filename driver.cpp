@@ -1,19 +1,25 @@
-#include "driver.h"
+#include "src/DG_Field_2d/DG_Field_2d.h"
 #include <iostream>
 #include <cmath>
 
 using namespace std;
 
 float initialPressure(float x, float y) {
-    return (exp(-8*(x*x+y*y)));
+    return (x + y*y*y);
 }
 
 int main() {
-    DG_Field_2d* P;
-    P = new DG_Field_2d(10, 10, 4, -1.0, -1.0, 1.0, 1.0);
-    P->addVariable_withoutBounary("Pressure");
-    P->initializeVariable("Pressure", initialPressure);
-    P->writeVTK("danda.vtk");
+    DG_Field_2d* field;
+    field = new DG_Field_2d(10, 10, 2, -1.0, -1.0, 1.0, 1.0);
+    
+    field->addVariable_withBounary("Q");
+    field->addVariable_withBounary("Qdash");
+    
+    field->initializeVariable("Q", initialPressure);
+    
+    field->delBydelX("Q", "Qdash", "central");
+
+    field->writeVTK("danda.vtk");
 
     
 }

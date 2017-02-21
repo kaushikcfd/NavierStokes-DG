@@ -1,9 +1,6 @@
 #include <lapacke.h>
 #include <cstring>
-#include "Zeros.hpp"
-
-#ifndef LegendrePolynomial_HPP
-#define LegendrePolynomial_HPP
+#include "Zeros.h"
 
 void legendrePolynomial(float *LegPolyn, unsigned int n)
 {
@@ -56,5 +53,3 @@ void legendrePolynomial(float *LegPolyn, unsigned int n)
     return ;
 
 }
-
-#endif

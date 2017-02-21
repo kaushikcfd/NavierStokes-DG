@@ -2,11 +2,11 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "Display.hpp"
+#include "Display.h"
 using namespace std;
-#ifndef Plot_HPP
-#define Plot_HPP
 
+#ifndef PLOT_H
+#define PLOT_H
 
 void plot(float *X, float *Y, float N, string GraphTitle = "", string LegendTitle = "", string fileName = "")
 {

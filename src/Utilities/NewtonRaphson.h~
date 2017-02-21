@@ -3,8 +3,6 @@
 #define epsi 0.001
 using namespace std;
 
-#ifndef NewtonRaphson_H
-#define NewtonRaphson_H
 
 float newtonRaphson(function<float(float)> func ,float x)
 {

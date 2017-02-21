@@ -1,8 +1,7 @@
-#include <lapacke.h>
-#include <cstring>
+#ifndef SYNTHETICDIVISION_H
+#define SYNTHETICDIVISION_H
 
-#ifndef SyntheticDivision_HPP
-#define SyntheticDivision_HPP
+#include <cstring>
 
 void syntheticDivision(float *GivenPoly, unsigned deg, float root)
 {

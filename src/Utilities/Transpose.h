@@ -1,8 +1,7 @@
-#include <lapacke.h>
-#include <cstring>
+#ifndef TRANSPOSE_H
+#define TRANSPOSE_H
 
-#ifndef Transpose_HPP
-#define Transpose_HPP
+#include <cstring>
 
 void transpose(float *A, unsigned N)
 {

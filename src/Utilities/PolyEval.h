@@ -1,7 +1,5 @@
-#include <lapacke.h>
-
-#ifndef PolyEval_HPP
-#define PolyEval_HPP
+#ifndef POLYEVAL_H
+#define POLYEVAL_H
 
 float polyEval(float *GivenPoly, unsigned deg, float x)
 {

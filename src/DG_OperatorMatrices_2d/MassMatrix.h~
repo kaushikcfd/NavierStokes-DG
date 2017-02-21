@@ -7,9 +7,6 @@
 
 using namespace std;
 
-#ifndef MASSMATRIX_H
-#define MASSMATRIX_H
-
 void massMatrix(float *MassMatrix,unsigned N)
 {
     float Poly[N+1][N+1];
@@ -54,5 +51,6 @@ void twoDMassMatrix(float *MassMatrix, unsigned N)
                     MassMatrix[(i1*(N+1)+j1)*(N+1)*(N+1)+i2*(N+1)+j2] = m[i1][i2]*m[j1][j2];
     return ;
 }
+
 
 #endif

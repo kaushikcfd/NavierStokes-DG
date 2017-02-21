@@ -1,7 +1,5 @@
 #include <cstdio>
 #include <lapacke.h>
-#ifndef Display_HPP
-#define Display_HPP
 
 void display(float *x, unsigned n)
 {
@@ -20,5 +18,3 @@ void display(float *A, unsigned m, unsigned n)
         printf("\n");
     }
 }
-
-#endif

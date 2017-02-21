@@ -1,9 +1,5 @@
 #include <lapacke.h>
 
-
-#ifndef Ones_HPP
-#define Ones_HPP
-
 void ones(float *x, unsigned n)
 {
     unsigned i;
@@ -17,5 +13,3 @@ void ones(float *A, unsigned m, unsigned n)
     for(i=0;i<m*n;i++)
             A[i] = 1.0;
 }
-
-#endif

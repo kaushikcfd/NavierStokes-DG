@@ -3,9 +3,6 @@
 #include "../Utilities/Zeros.h"
 #include "MassMatrix.h"
 
-#ifndef FLUXMATRIX_H
-#define FLUXMATRIX_H
-
 void fluxMatrix(float *FluxMatrix, unsigned N)
 {
     float Poly[N+1][N+1];

@@ -1,11 +1,7 @@
 #include <lapacke.h>
-#include "LobattoNodes.hpp"
-#include "Inverse.hpp"
-#include "Transpose.hpp"
-
-
-#ifndef LagrangePolynomials_HPP
-#define LagrangePolynomials_HPP
+#include "LobattoNodes.h"
+#include "Inverse.h"
+#include "Transpose.h"
 
 void lagrangePolynomials(float *Polynomials, unsigned N)
 {
@@ -28,5 +24,3 @@ void lagrangePolynomials(float *Polynomials, unsigned N)
     delete[] Nodes;
     return;
 }
-
-#endif
