@@ -3,3 +3,4 @@ build/*
 bin/
 danda.cpp
 a.out
+*.vtk
