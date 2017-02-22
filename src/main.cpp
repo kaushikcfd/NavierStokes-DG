@@ -8,23 +8,23 @@
 using namespace std;
 
 float Q(float x, float y) {
-    return (10*x + 20*y);
+    return (10*x*x + 20*y);
 }
 
 int main() {
     DG_Field_2d* field;
-    field = new DG_Field_2d(10, 10, 2, -1.0, -1.0, 1.0, 1.0);
+    field = new DG_Field_2d(10, 10, 4, -1.0, -1.0, 1.0, 1.0);
     
     field->addVariable_withBounary("Q");
     field->addVariable_withBounary("Q_x");
+    field->addVariable_withBounary("Q_xx");
     field->addVariable_withBounary("Q_y");
     
     field->initializeVariable("Q", Q);
     
-    field->delByDelX("Q", "Q_x", "central");
-    field->delByDelY("Q", "Q_y", "central");
-
-    field->axpy(3, "Q_x", "Q_y");
+    field->delByDelX("Q"  , "Q_x" , "central");
+    field->delByDelX("Q_x", "Q_xx", "central");
+    field->delByDelY("Q"  , "Q_y" , "central");
 
     field->writeVTK("output.vtk");
 }
