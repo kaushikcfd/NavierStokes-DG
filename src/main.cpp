@@ -24,5 +24,7 @@ int main() {
     field->delByDelX("Q", "Q_x", "central");
     field->delByDelY("Q", "Q_y", "central");
 
+    field->axpy(3, "Q_x", "Q_y");
+
     field->writeVTK("output.vtk");
 }

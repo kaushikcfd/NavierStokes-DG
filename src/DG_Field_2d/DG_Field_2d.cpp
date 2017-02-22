@@ -288,3 +288,38 @@ void DG_Field_2d::delByDelY(string v, string vDash, string fluxType) {
 
     return ;
 }
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @brief      This is used to extern the function `saxpy` to the class DG_Field_2d. $\mathbf{y} \mapsto a\mathbf{x} + \mathbf{y}$
+ *
+ * @param[in]  a     The coefficient `a` of `x`
+ * @param[in]  x     The column vector `x`
+ * @param[in]  y     The column vector `y`
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Field_2d::axpy(float a, string x, string y) {
+
+    for(int i = 0; i < ne_x; i++)
+        for(int j = 0; j < ne_y; j++)
+            elements[i][j]->axpy(a, x, y);
+    
+    return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @brief      This is used to extern the function `sscal` to the class DG_Field_2d. $\mathbf{x} \mapsto a\mathbf{x}$
+ *
+ * @param[in]  a     The coefficient `a` of `x`
+ * @param[in]  x     The column vector `x`
+ * @param[in]  y     The column vector `y`
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Field_2d::scal(float a, string x) {
+    for(int i = 0; i < ne_x; i++)
+        for(int j = 0; j < ne_y; j++)
+            elements[i][j]->scal(a, x);
+
+    return ;
+}

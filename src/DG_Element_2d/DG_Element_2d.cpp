@@ -343,3 +343,31 @@ void DG_Element_2d::setBottomFluxMatrix(float* f){
     fluxMatrix_bottom = f;
     return ;
 }
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @brief      This is used to extern the function `saxpy` to the class DG_Element_2d. $\mathbf{y} \mapsto a\mathbf{x} + \mathbf{y}$
+ *
+ * @param[in]  a     The coefficient `a` of `x`
+ * @param[in]  x     The column vector `x`
+ * @param[in]  y     The column vector `y`
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::axpy(float a, string x, string y) {
+    cblas_saxpy((N+1)*(N+1), a, variable[x], 1, variable[y], 1);
+    return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @brief      This is used to extern the function `sscal` to the class DG_Element_2d. $\mathbf{x} \mapsto a\mathbf{x}$
+ *
+ * @param[in]  a     The coefficient `a` of `x`
+ * @param[in]  x     The column vector `x`
+ * @param[in]  y     The column vector `y`
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::scal(float a, string x) {
+    cblas_sscal((N+1)*(N+1), a, variable[x], 1);
+    return ;
+}

@@ -90,6 +90,10 @@ public:
     void setLeftFluxMatrix(float* f);
     void setBottomFluxMatrix(float* f);
 
+    // Functions to apply linear operations on the variables.
+    void axpy(float a, string x, string y);
+    void scal(float a, string x);
+
 
 };
 

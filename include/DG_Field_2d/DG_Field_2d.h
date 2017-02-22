@@ -39,6 +39,10 @@ public:
     // Operators on the field.
     void delByDelX(string v, string vDash, string fluxType);
     void delByDelY(string v, string vDash, string fluxType);
+
+    // Functions to apply linear operations on the variables.
+    void axpy(float a, string x, string y);
+    void scal(float a, string x);
 };
 
 #endif
