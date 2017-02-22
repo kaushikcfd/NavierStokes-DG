@@ -35,8 +35,10 @@ public:
     void addVariable_withoutBounary(string v);
     void initializeVariable(string v, function<float(float, float)>);
     void writeVTK(string fileName);
-
-    void delBydelX(string v, string vDash, string fluxType);
+    
+    // Operators on the field.
+    void delByDelX(string v, string vDash, string fluxType);
+    void delByDelY(string v, string vDash, string fluxType);
 };
 
 #endif

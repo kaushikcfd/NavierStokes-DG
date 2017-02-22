@@ -7,8 +7,8 @@
 
 using namespace std;
 
-float initialPressure(float x, float y) {
-    return (10*x + y*y*y);
+float Q(float x, float y) {
+    return (10*x + 20*y);
 }
 
 int main() {
@@ -16,11 +16,13 @@ int main() {
     field = new DG_Field_2d(10, 10, 2, -1.0, -1.0, 1.0, 1.0);
     
     field->addVariable_withBounary("Q");
-    field->addVariable_withBounary("Qdash");
+    field->addVariable_withBounary("Q_x");
+    field->addVariable_withBounary("Q_y");
     
-    field->initializeVariable("Q", initialPressure);
+    field->initializeVariable("Q", Q);
     
-    field->delBydelX("Q", "Qdash", "central");
+    field->delByDelX("Q", "Q_x", "central");
+    field->delByDelY("Q", "Q_y", "central");
 
     field->writeVTK("output.vtk");
 }

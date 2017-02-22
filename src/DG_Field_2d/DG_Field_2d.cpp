@@ -255,8 +255,6 @@ void DG_Field_2d::writeVTK(string fileName){
     return ;
 }
 
-
-
 /* ----------------------------------------------------------------------------*/
 /**
  * @Synopsis  This is the function to operate the partial derivative of the variable w.r.t. x.
@@ -266,10 +264,27 @@ void DG_Field_2d::writeVTK(string fileName){
  * @Param fluxType The numerical flux type which is to be implemented while computing the derivative.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Field_2d::delBydelX(string v, string vDash, string fluxType) {
+void DG_Field_2d::delByDelX(string v, string vDash, string fluxType) {
     for(int i = 0; i < ne_x; i++ )
         for(int j = 0; j < ne_y; j++)
             elements[i][j]->delByDelX(v, vDash, fluxType);
+
+    return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function to operate the partial derivative of the variable w.r.t. y.
+ *
+ * @Param v The variable which is to be differentiated
+ * @Param vDash The variable in which the differentiated value is to be stored.
+ * @Param fluxType The numerical flux type which is to be implemented while computing the derivative.
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Field_2d::delByDelY(string v, string vDash, string fluxType) {
+    for(int i = 0; i < ne_x; i++ )
+        for(int j = 0; j < ne_y; j++)
+            elements[i][j]->delByDelY(v, vDash, fluxType);
 
     return ;
 }

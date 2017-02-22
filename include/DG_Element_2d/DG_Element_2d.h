@@ -78,6 +78,7 @@ public:
 
     // Functions for various operations on the variables.
     void delByDelX(string v, string vDash, string fluxType);
+    void delByDelY(string v, string vDash, string fluxType);
 
     // Functions to set the various operator matrices.
     void setMassMatrix(float* m);

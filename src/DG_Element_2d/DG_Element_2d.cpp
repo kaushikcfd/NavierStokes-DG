@@ -239,9 +239,47 @@ void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
         delete[] numericalFlux;
         delete[] auxillaryVariable;
     }
-
+    return ;
 }
 
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function to get the variable `v` differentiated partially w.r.t. `y` and then store it in the
+ * variable `vDash`. The function also takes `fluxType` as an input which would describe the numerical scheme that
+ * should be used in order to obtain the derivative.
+ *
+ * @Param v         Variable which is to be differentiated.
+ * @Param vDash     Variable in which the derivative is to be stored.
+ * @Param fluxType  The type of flux that is to be used. eg "central"
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::delByDelY(string v, string vDash, string fluxType) {
+    float dy = (y_end - y_start);
+    float dx = (x_end - x_start);
+
+    if(fluxType == "central") {
+        float* numericalFlux        =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        float* auxillaryVariable    =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        zeros(numericalFlux, (N+1)*(N+1));                                                       
+        for(int i=0; i<=N; i++){
+            numericalFlux[N*(N+1)+i]    = 0.5*( *boundaryTop[v][i]    + *neighboringTop[v][i] ) ;   
+            numericalFlux[i]            = 0.5*( *boundaryBottom[v][i]     + *neighboringBottom[v][i] ) ;  
+        }
+        /// vDash = -0.5*dy*D*v
+        cblas_sgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dx, derivativeMatrix_y, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+
+        /// Adding the numeical Flux terms as necessary.
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dx, fluxMatrix_top,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dx, fluxMatrix_bottom,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+
+        /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
+        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+
+        delete[] numericalFlux;
+        delete[] auxillaryVariable;
+    }
+    return ;
+}
 
 /* ----------------------------------------------------------------------------*/
 /**
