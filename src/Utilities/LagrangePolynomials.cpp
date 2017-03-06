@@ -1,12 +1,12 @@
-#include "../../include/Utilities/LobattoNodes.h"
-#include "../../include/Utilities/Inverse.h"
-#include "../../include/Utilities/Transpose.h"
+#include "../../includes/Utilities/LobattoNodes.h"
+#include "../../includes/Utilities/Inverse.h"
+#include "../../includes/Utilities/Transpose.h"
 
-void lagrangePolynomials(float *Polynomials, unsigned N)
+void lagrangePolynomials(double *Polynomials, unsigned N)
 {
-    float VanderMonde[N+1][N+1];
-    float *Nodes;
-    Nodes   =   new float[N+1];
+    double VanderMonde[N+1][N+1];
+    double *Nodes;
+    Nodes   =   new double[N+1];
     unsigned i,j;
     lobattoNodes(Nodes,N+1);
 

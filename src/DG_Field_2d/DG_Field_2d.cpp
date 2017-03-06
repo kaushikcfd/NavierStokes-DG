@@ -6,13 +6,13 @@
  * @date 2017-02-18
  */
 
-#include "../../include/DG_Field_2d/DG_Field_2d.h"
-#include "../../include/DG_Element_2d/DG_Element_2d.h"
+#include "../../includes/DG_Field_2d/DG_Field_2d.h"
+#include "../../includes/DG_Element_2d/DG_Element_2d.h"
 
-#include "../../include/Utilities/Inverse.h"
-#include "../../include/Utilities/DerivativeMatrix.h"
-#include "../../include/Utilities/MassMatrix.h"
-#include "../../include/Utilities/FluxMatrix.h"
+#include "../../includes/Utilities/Inverse.h"
+#include "../../includes/Utilities/DerivativeMatrix.h"
+#include "../../includes/Utilities/MassMatrix.h"
+#include "../../includes/Utilities/FluxMatrix.h"
 
 
 
@@ -32,7 +32,7 @@
  * @Param _y2 This corresponds to the y- coordinate of the top right corner of the grid
  */
 /* ----------------------------------------------------------------------------*/
-DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float _x2, float _y2) {
+DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, double _x1, double _y1, double _x2, double _y2) {
     ne_x = _nex;
     ne_y = _ney;
     N = _N;
@@ -44,7 +44,7 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
     /// Setting the grid, by setting the elements. The elements are set by providing their end points for the quads.
     elements.resize(ne_x);
 
-    float x_curr,y_curr, dx = (x2-x1)/ne_x, dy = (x2-x1)/ne_y;
+    double x_curr,y_curr, dx = (x2-x1)/ne_x, dy = (x2-x1)/ne_y;
     x_curr = x1;
     y_curr = y1;
 
@@ -86,14 +86,14 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float
     /// The main use of this step is to ensure that each and every elements is not computing the same matrices.
     
     /// Assigning spaces to those matrices.
-    float *massMatrix = new float[(N+1)*(N+1)*(N+1)*(N+1)];
-    float *derivativeMatrix_x = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
-    float *derivativeMatrix_y = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
-    float* fluxMatrix_top = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the flux matrix for the top edge.
-    float* fluxMatrix_right = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; // The Flux Matrix for the right edge.
-    float* fluxMatrix_bottom = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This would be the flux term for the the bottom edge.
-    float* fluxMatrix_left = new float[(N+1)*(N+1)*(N+1)*(N+1)] ; /// The Flux matrix for the left edge.
-    float* massInverse = new float[(N+1)*(N+1)*(N+1)*(N+1)] ;
+    double *massMatrix = new double[(N+1)*(N+1)*(N+1)*(N+1)];
+    double *derivativeMatrix_x = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
+    double *derivativeMatrix_y = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
+    double* fluxMatrix_top = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This is the flux matrix for the top edge.
+    double* fluxMatrix_right = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; // The Flux Matrix for the right edge.
+    double* fluxMatrix_bottom = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; /// This would be the flux term for the the bottom edge.
+    double* fluxMatrix_left = new double[(N+1)*(N+1)*(N+1)*(N+1)] ; /// The Flux matrix for the left edge.
+    double* massInverse = new double[(N+1)*(N+1)*(N+1)*(N+1)] ;
     
     /// Calling functions to compute the entries of the matrix.
     
@@ -168,7 +168,7 @@ void DG_Field_2d::addVariable_withoutBounary(string v) {
    return ;
 }
 
-void DG_Field_2d::initializeVariable(string v, function<float(float, float)> f) {
+void DG_Field_2d::initializeVariable(string v, function<double(double, double)> f) {
     
 
    for (int i=0; i < ne_x; i++ ){
@@ -197,7 +197,7 @@ void DG_Field_2d::writeVTK(string fileName){
     // Printing the preamble for the .vtk file.
     pFile << "# vtk DataFile Version 3.0\nNavier Stokes DG\nASCII\nDATASET UNSTRUCTURED_GRID\n";
     // The information of the number of points.
-    pFile << "POINTS\t" << (N+1)*(N+1)*ne_x*ne_y << "\tfloat\n";
+    pFile << "POINTS\t" << (N+1)*(N+1)*ne_x*ne_y << "\tdouble\n";
 
     // Writing the point co-ordinates.
     for ( j = 0; j < ne_y; j++ )
@@ -236,10 +236,10 @@ void DG_Field_2d::writeVTK(string fileName){
     pFile << "POINT_DATA\t"<< (N+1)*(N+1)*ne_x*ne_y <<"\n";
     
     int noOfVars = variableNames.size(); // Getting the number of variables
-    float* currentVariable;
+    double* currentVariable;
 
     for(k1=0; k1<noOfVars; k1++) {
-        pFile << "SCALARS\t"<< variableNames[k1] <<"\tfloat\nLOOKUP_TABLE default\n";
+        pFile << "SCALARS\t"<< variableNames[k1] <<"\tdouble\nLOOKUP_TABLE default\n";
         
         // Writing the value of the POINT_DATA, for the variable[variableNames[k1]] 
         for ( j = 0; j < ne_y; j++ ){
@@ -298,7 +298,7 @@ void DG_Field_2d::delByDelY(string v, string vDash, string fluxType) {
  * @param[in]  y     The column vector `y`
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Field_2d::axpy(float a, string x, string y) {
+void DG_Field_2d::axpy(double a, string x, string y) {
 
     for(int i = 0; i < ne_x; i++)
         for(int j = 0; j < ne_y; j++)
@@ -316,7 +316,7 @@ void DG_Field_2d::axpy(float a, string x, string y) {
  * @param[in]  y     The column vector `y`
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Field_2d::scal(float a, string x) {
+void DG_Field_2d::scal(double a, string x) {
     for(int i = 0; i < ne_x; i++)
         for(int j = 0; j < ne_y; j++)
             elements[i][j]->scal(a, x);

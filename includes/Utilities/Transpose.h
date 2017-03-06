@@ -1,6 +1,6 @@
 #ifndef TRANSPOSE_H
 #define TRANSPOSE_H
 
-void transpose(float *A, unsigned N);
+void transpose(double *A, unsigned N);
 
 #endif

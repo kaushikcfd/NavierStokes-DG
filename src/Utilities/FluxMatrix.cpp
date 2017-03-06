@@ -1,33 +1,33 @@
 #include <cstring>
 #include <functional>
 
-#include "../../include/Utilities/LagrangePolynomials.h"
-#include "../../include/Utilities/Zeros.h"
-#include "../../include/Utilities/MassMatrix.h"
-#include "../../include/Utilities/PolyEval.h"
+#include "../../includes/Utilities/LagrangePolynomials.h"
+#include "../../includes/Utilities/Zeros.h"
+#include "../../includes/Utilities/MassMatrix.h"
+#include "../../includes/Utilities/PolyEval.h"
 
 using namespace std;
 
-void fluxMatrix(float *FluxMatrix, unsigned N)
+void fluxMatrix(double *FluxMatrix, unsigned N)
 {
-    float Poly[N+1][N+1];
-    float **poly;
-    poly   =   new float*[N+1];
+    double Poly[N+1][N+1];
+    double **poly;
+    poly   =   new double*[N+1];
     lagrangePolynomials(*Poly,N);
     unsigned i,j;
 
     for(i=0;i<=N;i++)
     {
-        poly[i] =   new float[N+1];
-        memcpy(poly[i],Poly[i],(N+1)*sizeof(float));
+        poly[i] =   new double[N+1];
+        memcpy(poly[i],Poly[i],(N+1)*sizeof(double));
     }
 
-    function<float(float)> eval;
+    function<double(double)> eval;
     for(i=0;i<=N;i++)
     {
         for(j=0;j<=N;j++)
         {
-            eval = [&poly,&i,&j,&N](float x){return (((polyEval(poly[i],N,x))*(polyEval(poly[j],N,x))));};
+            eval = [&poly,&i,&j,&N](double x){return (((polyEval(poly[i],N,x))*(polyEval(poly[j],N,x))));};
             FluxMatrix[i*(N+1)+j] = eval(1)-eval(-1);
         }
     }
@@ -39,10 +39,10 @@ void fluxMatrix(float *FluxMatrix, unsigned N)
     return ;
 }
 
-void twoDFluxMatrix1(float *Flux1, unsigned N)
+void twoDFluxMatrix1(double *Flux1, unsigned N)
 {
     unsigned i1,i2,j1,j2;
-    float M[N+1][N+1];
+    double M[N+1][N+1];
     massMatrix(*M,N);
     zeros(Flux1,(N+1)*(N+1),(N+1)*(N+1));
 
@@ -53,10 +53,10 @@ void twoDFluxMatrix1(float *Flux1, unsigned N)
                 Flux1[(i1*(N+1)+j1)*(N+1)*(N+1)+i2*(N+1)+j2] = M[j1][j2];
 }
 
-void twoDFluxMatrix3(float *Flux3, unsigned N)
+void twoDFluxMatrix3(double *Flux3, unsigned N)
 {
     unsigned i1,i2,j1,j2;
-    float M[N+1][N+1];
+    double M[N+1][N+1];
     massMatrix(*M,N);
     zeros(Flux3,(N+1)*(N+1),(N+1)*(N+1));
 
@@ -67,10 +67,10 @@ void twoDFluxMatrix3(float *Flux3, unsigned N)
                 Flux3[(i1*(N+1)+j1)*(N+1)*(N+1)+i2*(N+1)+j2] = M[j1][j2];
 }
 
-void twoDFluxMatrix2(float *Flux2, unsigned N)
+void twoDFluxMatrix2(double *Flux2, unsigned N)
 {
     unsigned i1,i2,j1,j2;
-    float M[N+1][N+1];
+    double M[N+1][N+1];
     massMatrix(*M,N);
     zeros(Flux2,(N+1)*(N+1),(N+1)*(N+1));
 
@@ -80,10 +80,10 @@ void twoDFluxMatrix2(float *Flux2, unsigned N)
                 Flux2[(i1*(N+1)+j1)*(N+1)*(N+1)+i2*(N+1)+j2] = M[i1][i2];
 }
 
-void twoDFluxMatrix4(float *Flux4, unsigned N)
+void twoDFluxMatrix4(double *Flux4, unsigned N)
 {
     unsigned i1,i2,j1,j2;
-    float M[N+1][N+1];
+    double M[N+1][N+1];
     massMatrix(*M,N);
     zeros(Flux4,(N+1)*(N+1),(N+1)*(N+1));
 

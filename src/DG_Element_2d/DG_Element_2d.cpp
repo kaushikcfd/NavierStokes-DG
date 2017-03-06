@@ -1,12 +1,12 @@
-#include "../../include/DG_Element_2d/DG_Element_2d.h"
+#include "../../includes/DG_Element_2d/DG_Element_2d.h"
 
-#include "../../include/Utilities/Zeros.h"
-#include "../../include/Utilities/Inverse.h"
+#include "../../includes/Utilities/Zeros.h"
+#include "../../includes/Utilities/Inverse.h"
 
-#include "../../include/Utilities/FluxMatrix.h"
-#include "../../include/Utilities/MassMatrix.h"
-#include "../../include/Utilities/DerivativeMatrix.h"
-#include "../../include/Utilities/LobattoNodes.h"
+#include "../../includes/Utilities/FluxMatrix.h"
+#include "../../includes/Utilities/MassMatrix.h"
+#include "../../includes/Utilities/DerivativeMatrix.h"
+#include "../../includes/Utilities/LobattoNodes.h"
 
 
 
@@ -22,7 +22,7 @@
  * @Param[in] y2 The y-coord of the top right corner.
  */
 /* ----------------------------------------------------------------------------*/
-DG_Element_2d::DG_Element_2d(int _N, float x1, float y1, float x2, float y2) {
+DG_Element_2d::DG_Element_2d(int _N, double x1, double y1, double x2, double y2) {
     N = _N;
     x_start = x1;
     y_start = y1;
@@ -30,10 +30,10 @@ DG_Element_2d::DG_Element_2d(int _N, float x1, float y1, float x2, float y2) {
     y_end   = y2;
 
 
-    X = new float[(N+1)*(N+1)];
-    Y = new float[(N+1)*(N+1)];
+    X = new double[(N+1)*(N+1)];
+    Y = new double[(N+1)*(N+1)];
 
-    float* nodes = new float[N+1]; // Alloting space for the lobatto nodes.
+    double* nodes = new double[N+1]; // Alloting space for the lobatto nodes.
     
     lobattoNodes(nodes, N+1); // Found the lobatto nodes in the range -1 to +1.
 
@@ -73,7 +73,7 @@ DG_Element_2d::DG_Element_2d(int _N, float x1, float y1, float x2, float y2) {
  */
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::addVariable_withoutBoundary(string v) {
-    float * newVariable = new float[(N+1)*(N+1)]; /// Allocating the space for the new variable which is to be created.
+    double * newVariable = new double[(N+1)*(N+1)]; /// Allocating the space for the new variable which is to be created.
     variable[v] = newVariable; /// Now assigning the same to the map.
 
     return ;
@@ -89,21 +89,21 @@ void DG_Element_2d::addVariable_withoutBoundary(string v) {
  */
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::addVariable_withBoundary(string v) {
-    float * newVariable = new float[(N+1)*(N+1)]; /// Allocating the space for the new variable which is to be created.
+    double * newVariable = new double[(N+1)*(N+1)]; /// Allocating the space for the new variable which is to be created.
     variable[v] = newVariable; /// Now assigning the same to the map.
     
-    // **b_top is used because it will store the address to the boundary element, So whenever the actual value in the float* of the variable is changed then this will also change automatically. The same holds for all the other following mentioned variables.
+    // **b_top is used because it will store the address to the boundary element, So whenever the actual value in the double* of the variable is changed then this will also change automatically. The same holds for all the other following mentioned variables.
     
-    float **b_top       = new float* [N+1]; 
-    float **b_bottom    = new float* [N+1];
-    float **b_left      = new float* [N+1];
-    float **b_right     = new float* [N+1];
+    double **b_top       = new double* [N+1]; 
+    double **b_bottom    = new double* [N+1];
+    double **b_left      = new double* [N+1];
+    double **b_right     = new double* [N+1];
 
    
-    float **n_top       = new float* [N+1];
-    float **n_left      = new float* [N+1];
-    float **n_right     = new float* [N+1];
-    float **n_bottom    = new float* [N+1];
+    double **n_top       = new double* [N+1];
+    double **n_left      = new double* [N+1];
+    double **n_right     = new double* [N+1];
+    double **n_bottom    = new double* [N+1];
 
     for(int i=0; i<=N; i++){
         n_bottom[i] =   b_bottom[i] = &(variable[v][i]);    
@@ -137,7 +137,7 @@ void DG_Element_2d::addVariable_withBoundary(string v) {
  * @Param f This is the f(x, y) which is used to initialize the variable.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::initializeVariable(string v, function<float(float, float)> f) {
+void DG_Element_2d::initializeVariable(string v, function<double(double, double)> f) {
     for(int i=0; i<((N+1)*(N+1)); i++)
         variable[v][i] = f(X[i], Y[i]);
     
@@ -215,26 +215,26 @@ void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
  */
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
-    float dy = (y_end - y_start);
-    float dx = (x_end - x_start);
+    double dy = (y_end - y_start);
+    double dx = (x_end - x_start);
 
     if(fluxType == "central") {
-        float* numericalFlux        =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable.
-        float* auxillaryVariable    =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        double* numericalFlux        =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        double* auxillaryVariable    =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
         zeros(numericalFlux, (N+1)*(N+1));                                                       
         for(int i=0; i<=N; i++){
             numericalFlux[i*(N+1)+N]    = 0.5*( *boundaryRight[v][i]    + *neighboringRight[v][i] ) ;   
             numericalFlux[i*(N+1)]    = 0.5*( *boundaryLeft[v][i]     + *neighboringLeft[v][i] ) ;  
         }
         /// vDash = -0.5*dy*D*v
-        cblas_sgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dy, derivativeMatrix_x, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dy, derivativeMatrix_x, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
 
         /// Adding the numeical Flux terms as necessary.
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dy, fluxMatrix_right,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dy, fluxMatrix_left,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dy, fluxMatrix_right,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dy, fluxMatrix_left,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
 
         /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
 
         delete[] numericalFlux;
         delete[] auxillaryVariable;
@@ -254,26 +254,26 @@ void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
  */
 /* ----------------------------------------------------------------------------*/
 void DG_Element_2d::delByDelY(string v, string vDash, string fluxType) {
-    float dy = (y_end - y_start);
-    float dx = (x_end - x_start);
+    double dy = (y_end - y_start);
+    double dx = (x_end - x_start);
 
     if(fluxType == "central") {
-        float* numericalFlux        =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable.
-        float* auxillaryVariable    =   new float[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        double* numericalFlux        =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        double* auxillaryVariable    =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
         zeros(numericalFlux, (N+1)*(N+1));                                                       
         for(int i=0; i<=N; i++){
             numericalFlux[N*(N+1)+i]    = 0.5*( *boundaryTop[v][i]    + *neighboringTop[v][i] ) ;   
             numericalFlux[i]            = 0.5*( *boundaryBottom[v][i]     + *neighboringBottom[v][i] ) ;  
         }
         /// vDash = -0.5*dy*D*v
-        cblas_sgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dx, derivativeMatrix_y, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dx, derivativeMatrix_y, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
 
         /// Adding the numeical Flux terms as necessary.
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dx, fluxMatrix_top,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dx, fluxMatrix_bottom,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dx, fluxMatrix_top,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dx, fluxMatrix_bottom,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
 
         /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
-        cblas_sgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
 
         delete[] numericalFlux;
         delete[] auxillaryVariable;
@@ -288,12 +288,12 @@ void DG_Element_2d::delByDelY(string v, string vDash, string fluxType) {
  * @Param m This is the massMatix array(actually a matrix, but implemented as a 1-d array).
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::setMassMatrix(float *m) {
+void DG_Element_2d::setMassMatrix(double *m) {
     massMatrix = m;
     return ;
 }
 
-void DG_Element_2d::setInverseMassMatrix(float* im) {
+void DG_Element_2d::setInverseMassMatrix(double* im) {
     inverseMassMatrix = im;
     return ;
 }
@@ -305,7 +305,7 @@ void DG_Element_2d::setInverseMassMatrix(float* im) {
  * @Param d The array of the x-derivative matrix which is given as an input.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::setderivateMatrix_x(float *d) {
+void DG_Element_2d::setderivateMatrix_x(double *d) {
     derivativeMatrix_x = d;
     return ;
 }
@@ -318,28 +318,28 @@ void DG_Element_2d::setderivateMatrix_x(float *d) {
  * @Param d The array of the y-derivative matrix which is given as an input.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::setderivateMatrix_y(float *d) {
+void DG_Element_2d::setderivateMatrix_y(double *d) {
     derivativeMatrix_y = d;
     return ;
 }
 
 /***THE FOLLOWING 4 FUNCTIONS HAVE THE SIMILAR JOB TO SET THE FLUX MATRICES.****/
 
-void DG_Element_2d::setTopFluxMatrix(float* f) {
+void DG_Element_2d::setTopFluxMatrix(double* f) {
     fluxMatrix_top = f;
     return ;
 }
-void DG_Element_2d::setRightFluxMatrix(float* f){
+void DG_Element_2d::setRightFluxMatrix(double* f){
     fluxMatrix_right = f;
     return ;
 }
 
-void DG_Element_2d::setLeftFluxMatrix(float* f){
+void DG_Element_2d::setLeftFluxMatrix(double* f){
     fluxMatrix_left = f;
     return ;
 }
 
-void DG_Element_2d::setBottomFluxMatrix(float* f){
+void DG_Element_2d::setBottomFluxMatrix(double* f){
     fluxMatrix_bottom = f;
     return ;
 }
@@ -353,8 +353,8 @@ void DG_Element_2d::setBottomFluxMatrix(float* f){
  * @param[in]  y     The column vector `y`
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::axpy(float a, string x, string y) {
-    cblas_saxpy((N+1)*(N+1), a, variable[x], 1, variable[y], 1);
+void DG_Element_2d::axpy(double a, string x, string y) {
+    cblas_daxpy((N+1)*(N+1), a, variable[x], 1, variable[y], 1);
     return ;
 }
 
@@ -367,7 +367,7 @@ void DG_Element_2d::axpy(float a, string x, string y) {
  * @param[in]  y     The column vector `y`
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::scal(float a, string x) {
-    cblas_sscal((N+1)*(N+1), a, variable[x], 1);
+void DG_Element_2d::scal(double a, string x) {
+    cblas_dscal((N+1)*(N+1), a, variable[x], 1);
     return ;
 }

@@ -1,6 +1,8 @@
-float polyEval(float *GivenPoly, unsigned deg, float x)
+#include "../../includes/Utilities/PolyEval.h"
+
+double polyEval(double *GivenPoly, unsigned deg, double x)
 {
-	float Result = GivenPoly[deg];
+	double Result = GivenPoly[deg];
 	for(int i = deg-1;i>=0;i--)
 		Result = Result*x+GivenPoly[i];
 	return Result ;

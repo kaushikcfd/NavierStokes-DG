@@ -1,20 +1,18 @@
-#include <lapacke.h>
 #include <functional>
-#include "../../include/Utilities/LobattoNodes.h"
-#include "../../include/Utilities/LobattoWeights.h"
-#include "../../include/Utilities/PolyEval.h"
-
+#include "../../includes/Utilities/LobattoIntegration.h"
+#include "../../includes/Utilities/LobattoNodes.h"
+#include "../../includes/Utilities/LobattoWeights.h"
 using namespace std;
 
 
-float lobattoIntegration(float start, float end, unsigned N, function<float(float)> f) {
+double lobattoIntegration(double start, double end, unsigned N, function<double(double)> f) {
     N++;
-    float *Nodes,*Weights,*Values;
-    Nodes   =   new float[N];
-    Weights =   new float[N];
-    Values  =   new float[N];
+    double *Nodes,*Weights,*Values;
+    Nodes   =   new double[N];
+    Weights =   new double[N];
+    Values  =   new double[N];
     unsigned i;
-    float integral=0.0;
+    double integral=0.0;
 
     if(start>=end)
 	{
@@ -34,6 +32,10 @@ float lobattoIntegration(float start, float end, unsigned N, function<float(floa
 
 	for(i=0;i<N;i++)
 		integral += (Values[i]*Weights[i]);
+
+    delete[]    Nodes;
+    delete[]    Weights;
+    delete[]    Values;
 
 	return (0.5*(end-start)*(integral));
 }

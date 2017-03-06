@@ -37,15 +37,15 @@ class DG_Element_2d {
 private:
     
     int N; /// This represents the order of polynomial interpolation which is done while solving the DG equations.
-    float x_start, x_end, y_start, y_end; /// Since, this is a structured rectangular element. These variables define the position and size of the element.
-    float* massMatrix;
-    float* derivativeMatrix_x; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
-    float* derivativeMatrix_y; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
-    float* fluxMatrix_top; /// This is the flux matrix for the top edge.
-    float* fluxMatrix_right; // The Flux Matrix for the right edge.
-    float* fluxMatrix_bottom; /// This would be the flux term for the the bottom edge.
-    float* fluxMatrix_left; /// The Flux matrix for the left edge.
-    float* inverseMassMatrix; /// The inverse of the mass matrix is also created only once in the field function. And just passed to each element.
+    double x_start, x_end, y_start, y_end; /// Since, this is a structured rectangular element. These variables define the position and size of the element.
+    double* massMatrix;
+    double* derivativeMatrix_x; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dx}$ of any term. 
+    double* derivativeMatrix_y; /// This is the matrix which is laid out in 1-D, this would help us to find t    he $\frac{d}{dy}$ of any term.
+    double* fluxMatrix_top; /// This is the flux matrix for the top edge.
+    double* fluxMatrix_right; // The Flux Matrix for the right edge.
+    double* fluxMatrix_bottom; /// This would be the flux term for the the bottom edge.
+    double* fluxMatrix_left; /// The Flux matrix for the left edge.
+    double* inverseMassMatrix; /// The inverse of the mass matrix is also created only once in the field function. And just passed to each element.
      
     DG_Element_2d* topNeighbor;
     DG_Element_2d* rightNeighbor;
@@ -54,25 +54,25 @@ private:
 
 public:
 
-    float *X, *Y;
-    map<string, float*> variable; /// This is the map which would contain all the variable that are needed by the problem.
+    double *X, *Y;
+    map<string, double*> variable; /// This is the map which would contain all the variable that are needed by the problem.
 
-    map<string, float**> boundaryTop;
-    map<string, float**> boundaryRight;
-    map<string, float**> boundaryLeft;
-    map<string, float**> boundaryBottom;
+    map<string, double**> boundaryTop;
+    map<string, double**> boundaryRight;
+    map<string, double**> boundaryLeft;
+    map<string, double**> boundaryBottom;
     
-    map<string, float**> neighboringTop;
-    map<string, float**> neighboringRight;
-    map<string, float**> neighboringBottom;
-    map<string, float**> neighboringLeft;
+    map<string, double**> neighboringTop;
+    map<string, double**> neighboringRight;
+    map<string, double**> neighboringBottom;
+    map<string, double**> neighboringLeft;
 
     vector<string> boundaryVariables; /// This is the variable which stores the name of all the variables whose boundary and neighboring points are stored. 
 
-    DG_Element_2d(int _N, float x1, float y1, float x2, float y2);
+    DG_Element_2d(int _N, double x1, double y1, double x2, double y2);
     void addVariable_withBoundary(string v);
     void addVariable_withoutBoundary(string v);
-    void initializeVariable(string v, function<float(float, float)> f);
+    void initializeVariable(string v, function<double(double, double)> f);
     void setNeighboringElement(char type, DG_Element_2d* neighbor );
     void setVariableNeighbors(string v);
 
@@ -81,18 +81,18 @@ public:
     void delByDelY(string v, string vDash, string fluxType);
 
     // Functions to set the various operator matrices.
-    void setMassMatrix(float* m);
-    void setInverseMassMatrix(float* im);
-    void setderivateMatrix_x(float* d);
-    void setderivateMatrix_y(float* d);
-    void setTopFluxMatrix(float* f);
-    void setRightFluxMatrix(float* f);
-    void setLeftFluxMatrix(float* f);
-    void setBottomFluxMatrix(float* f);
+    void setMassMatrix(double* m);
+    void setInverseMassMatrix(double* im);
+    void setderivateMatrix_x(double* d);
+    void setderivateMatrix_y(double* d);
+    void setTopFluxMatrix(double* f);
+    void setRightFluxMatrix(double* f);
+    void setLeftFluxMatrix(double* f);
+    void setBottomFluxMatrix(double* f);
 
     // Functions to apply linear operations on the variables.
-    void axpy(float a, string x, string y);
-    void scal(float a, string x);
+    void axpy(double a, string x, string y);
+    void scal(double a, string x);
 
 
 };

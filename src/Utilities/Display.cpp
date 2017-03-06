@@ -1,13 +1,14 @@
+#include "../../includes/Utilities/Display.h"
 #include <cstdio>
 
-void display(float *x, unsigned n)
+void display(double *x, unsigned n)
 {
     unsigned i;
     for(i=0; i<n; i++)
         printf("%6.2f\n",x[i]);
 }
 
-void display(float *A, unsigned m, unsigned n)
+void display(double *A, unsigned m, unsigned n)
 {
     unsigned i,j;
     for(i=0; i<m; i++)

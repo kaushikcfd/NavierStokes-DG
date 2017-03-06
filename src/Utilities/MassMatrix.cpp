@@ -1,32 +1,32 @@
 #include <lapacke.h>
 #include <functional>
 #include <cstring>
-#include "../../include/Utilities/LagrangePolynomials.h"
-#include "../../include/Utilities/PolyEval.h"
-#include "../../include/Utilities/LobattoIntegration.h"
+#include "../../includes/Utilities/LagrangePolynomials.h"
+#include "../../includes/Utilities/PolyEval.h"
+#include "../../includes/Utilities/LobattoIntegration.h"
 
 using namespace std;
 
-void massMatrix(float *MassMatrix,unsigned N)
+void massMatrix(double *MassMatrix,unsigned N)
 {
-    float Poly[N+1][N+1];
-    float **poly;
-    poly   =   new float*[N+1];
+    double Poly[N+1][N+1];
+    double **poly;
+    poly   =   new double*[N+1];
     lagrangePolynomials(*Poly,N);
     unsigned i,j;
 
     for(i=0;i<=N;i++)
     {
-        poly[i] =   new float[N+1];
-        memcpy(poly[i],Poly[i],(N+1)*sizeof(float));
+        poly[i] =   new double[N+1];
+        memcpy(poly[i],Poly[i],(N+1)*sizeof(double));
     }
 
-    function<float(float)> eval;
+    function<double(double)> eval;
     for(i=0;i<=N;i++)
     {
         for(j=0;j<=N;j++)
         {
-            eval = [&poly,&i,&j,&N](float x){return (((polyEval(poly[i],N,x))*(polyEval(poly[j],N,x))));};
+            eval = [&poly,&i,&j,&N](double x){return (((polyEval(poly[i],N,x))*(polyEval(poly[j],N,x))));};
             MassMatrix[i*(N+1)+j] = lobattoIntegration(-1.0,1.0,N+1,eval);
         }
     }
@@ -38,9 +38,9 @@ void massMatrix(float *MassMatrix,unsigned N)
     return ;
 }
 
-void twoDMassMatrix(float *MassMatrix, unsigned N)
+void twoDMassMatrix(double *MassMatrix, unsigned N)
 {
-    float m[N+1][N+1];
+    double m[N+1][N+1];
     massMatrix(*m,N);
     unsigned i1,i2,j1,j2;
 

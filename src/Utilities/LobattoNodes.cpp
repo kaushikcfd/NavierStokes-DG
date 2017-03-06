@@ -1,34 +1,21 @@
 #include <algorithm>
-#include <functional>
 
-#include "../../include/Utilities/LegendrePolynomial.h"
-#include "../../include/Utilities/PolyEval.h"
-#include "../../include/Utilities/PolyDeriv.h"
-#include "../../include/Utilities/SyntheticDivision.h"
-#include "../../include/Utilities/NewtonRaphson.h"
+#include "../../includes/Utilities/LobattoNodes.h"
+#include "../../includes/Utilities/LegendrePolynomial.h"
+#include "../../includes/Utilities/PolyEval.h"
+#include "../../includes/Utilities/PolyDeriv.h"
+#include "../../includes/Utilities/PolynomialRoots.h"
 using namespace std;
 
-void lobattoNodes(float *Nodes, unsigned N)
+void lobattoNodes(double *Nodes, unsigned N)
 {
-    float *Poly,*DerivedPoly;
-    Poly        =   new float[N];
-    DerivedPoly =   new float[N-1];
-    float root;
-	float InitialGuess=-1.0;
-	unsigned deg=N-2;///To store the degree at each state of the polynomial.
+    double *Poly,*DerivedPoly;
+    Poly        =   new double[N];
+    DerivedPoly =   new double[N-1];
     legendrePolynomial(Poly,N-1);
     polyDeriv(Poly,DerivedPoly,N-1);
-
-    function<float(float)> eval;
 	Nodes[0]   =   -1;
-	for(int i=1;i<=N-2;i++)
-	{
-		eval = [&DerivedPoly,&deg](float x){ return(polyEval(DerivedPoly,deg,x));};
-		root = newtonRaphson(eval,InitialGuess);
-		syntheticDivision(DerivedPoly,deg,root);
-        --deg;
-		Nodes[i]  =   root;
-	}
+    polynomialRoots(DerivedPoly, &(Nodes[1]), N-2);
 	Nodes[N-1] =   1;
 	sort(Nodes,Nodes+N);
 

@@ -3,6 +3,6 @@
 
 #include <cstring>
 
-void legendrePolynomial(float *LegPolyn, unsigned int n);
+void legendrePolynomial(double *LegPolyn, unsigned int n);
 
 #endif

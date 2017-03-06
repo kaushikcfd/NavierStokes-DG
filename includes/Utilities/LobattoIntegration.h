@@ -5,6 +5,6 @@
 
 using namespace std;
 
-float lobattoIntegration(float start, float end, unsigned N, function<float(float)> f);
+double lobattoIntegration(double start, double end, unsigned N, function<double(double)> f);
 
 #endif

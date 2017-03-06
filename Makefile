@@ -36,14 +36,14 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 
 # Folder Lists
 # Note: Intentionally excludes the root of the include folder so the lists are clean
-INCDIRS := $(shell find include/**/* -name '*.h' -exec dirname {} \; | sort | uniq)
-INCLIST := $(patsubst include/%,-I include/%,$(INCDIRS))
-BUILDLIST := $(patsubst include/%,$(BUILDDIR)/%,$(INCDIRS))
+INCDIRS := $(shell find includes/**/* -name '*.h' -exec dirname {} \; | sort | uniq)
+INCLIST := $(patsubst includes/%,-I include/%,$(INCDIRS))
+BUILDLIST := $(patsubst includes/%,$(BUILDDIR)/%,$(INCDIRS))
 
 # Shared Compiler Flags
 CFLAGS := -c
 INC := -I include $(INCLIST) -I /usr/local/include
-LIB := -L /usr/local/lib -lblas -llapacke
+LIB := -L /usr/local/lib -lblas -llapacke -lgsl -lgslcblas -lm
 
 # Platform Specific Compiler Flags
 ifeq ($(UNAME_S),Linux)

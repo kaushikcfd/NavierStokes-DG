@@ -1,24 +1,25 @@
 #include <functional>
 
-#include "../../include/Utilities/LobattoNodes.h"
-#include "../../include/Utilities/PolyEval.h"
-#include "../../include/Utilities/PolyDeriv.h"
-#include "../../include/Utilities/LegendrePolynomial.h"
+#include "../../includes/Utilities/LobattoWeights.h"
+#include "../../includes/Utilities/LobattoNodes.h"
+#include "../../includes/Utilities/PolyEval.h"
+#include "../../includes/Utilities/PolyDeriv.h"
+#include "../../includes/Utilities/LegendrePolynomial.h"
 
 using namespace std;
 
-void lobattoWeights(float *Weights, unsigned N)
+void lobattoWeights(double *Weights, unsigned N)
 {
-    float *Poly, *Nodes;
-    Poly    =   new float[N];
-    Nodes   =   new float[N];
+    double *Poly, *Nodes;
+    Poly    =   new double[N];
+    Nodes   =   new double[N];
 	legendrePolynomial(Poly,N-1);
     lobattoNodes(Nodes,N);
 
-    function<float(float)> Eval;
+    function<double(double)> Eval;
     Weights[0]  = 2.0/((N)*(N-1));
 
-    Eval = [&Poly,&N](float x){ return(polyEval(Poly,N-1,x));};
+    Eval = [&Poly,&N](double x){ return(polyEval(Poly,N-1,x));};
 
 	for(int i=1;i<N-1;i++)
 		Weights[i]    =   2/((N*(N-1))*(Eval(Nodes[i]))*(Eval(Nodes[i])));

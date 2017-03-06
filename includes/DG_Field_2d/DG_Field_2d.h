@@ -22,7 +22,7 @@ class DG_Field_2d {
 private:
     int N; /// The order of the polynomial of interpolation.
     int ne_x, ne_y; /// Since this is a structured grid we can define the grid with the help of number of elements in the x-direction and in the y-direction.
-    float x1, y1, x2, y2;
+    double x1, y1, x2, y2;
 
 
 public:
@@ -30,10 +30,10 @@ public:
    vector<string> variableNames; // This is stores all the variables which have been added to the field.
    vector<string> variablesWithBoundaryInfo; // This stores all the variables whose boundary info. is also known.
 
-    DG_Field_2d(int _nex, int _ney, int _N, float _x1, float _y1, float _x2, float _y2);
+    DG_Field_2d(int _nex, int _ney, int _N, double _x1, double _y1, double _x2, double _y2);
     void addVariable_withBounary(string v);
     void addVariable_withoutBounary(string v);
-    void initializeVariable(string v, function<float(float, float)>);
+    void initializeVariable(string v, function<double(double, double)>);
     void writeVTK(string fileName);
     
     // Operators on the field.
@@ -41,8 +41,8 @@ public:
     void delByDelY(string v, string vDash, string fluxType);
 
     // Functions to apply linear operations on the variables.
-    void axpy(float a, string x, string y);
-    void scal(float a, string x);
+    void axpy(double a, string x, string y);
+    void scal(double a, string x);
 };
 
 #endif
