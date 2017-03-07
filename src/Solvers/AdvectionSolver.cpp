@@ -41,16 +41,12 @@ double product(double x, double y) {
 }
 
 void AdvectionSolver::solve() {
-
-
     field->addVariable_withoutBounary("dqdt");
     field->addVariable_withBounary("uq");
     field->addVariable_withBounary("vq");
 
     field->addVariable_withoutBounary("duqdx");
     field->addVariable_withoutBounary("dvqdy");
-
-    field->addVariable_withoutBounary("q0");
 
     field->addVariable_withoutBounary("k1");
     field->addVariable_withoutBounary("k2");
@@ -60,9 +56,7 @@ void AdvectionSolver::solve() {
     // Till now the variable has been initialized.
     // This for-loop is used to march progressively in time. 
     for(int i=0; i < no_of_time_steps; i++) {
-        field->scal(0.0, "q0");
-        field->axpy(1.0, "q", "q0");
-
+        /// First step of RK3
         field->setFunctionsForVariables("u", "q", product, "uq");
         field->setFunctionsForVariables("v", "q", product, "vq");
         
@@ -74,11 +68,37 @@ void AdvectionSolver::solve() {
         field->axpy(-1.0, "dvqdy", "k1");
         
         field->axpy(0.5*dt, "k1", "q");
-
-
-            
         
+        ///Second Step of RK3
+        field->setFunctionsForVariables("u", "q", product, "uq");
+        field->setFunctionsForVariables("v", "q", product, "vq");
         
+        field->delByDelX("uq", "duqdx", "central");
+        field->delByDelY("vq", "dvqdy", "central");
+        
+        field->scal(0.0, "k2");
+        field->axpy(-1.0, "duqdx", "k2");
+        field->axpy(-1.0, "dvqdy", "k2");
+        
+        field->axpy(-1.5*dt, "k1", "q");
+        field->axpy( 2.0*dt, "k2", "q");
+
+        /// Third(&final) step of RK3
+        field->setFunctionsForVariables("u", "q", product, "uq");
+        field->setFunctionsForVariables("v", "q", product, "vq");
+        
+        field->delByDelX("uq", "duqdx", "central");
+        field->delByDelY("vq", "dvqdy", "central");
+        
+        field->scal(0.0, "k3");
+        field->axpy(-1.0, "duqdx", "k3");
+        field->axpy(-1.0, "dvqdy", "k3");
+        
+        field->axpy( (7.0/6.0)*dt, "k1", "q");
+        field->axpy(-(4.0/3.0)*dt, "k2", "q");
+        field->axpy( (1.0/6.0)*dt, "k3", "q");
+        
+        /// RK3 is done, incrementing the time step. 
         time += dt;        
     }
 }
