@@ -8,7 +8,7 @@
 #include "../../includes/Utilities/DerivativeMatrix.h"
 #include "../../includes/Utilities/LobattoNodes.h"
 
-
+#include <cmath>
 
 /* ----------------------------------------------------------------------------*/
 /**
@@ -217,7 +217,7 @@ void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
 void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
     double dy = (y_end - y_start);
     double dx = (x_end - x_start);
-
+    
     if(fluxType == "central") {
         double* numericalFlux        =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable.
         double* auxillaryVariable    =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
@@ -370,4 +370,48 @@ void DG_Element_2d::axpy(double a, string x, string y) {
 void DG_Element_2d::scal(double a, string x) {
     cblas_dscal((N+1)*(N+1), a, variable[x], 1);
     return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function used to change the value of variable z to f(x, y).
+ *
+ * @Param x The first parameter of the function.
+ * @Param y The second parameter of the function.
+ * @Param functionf The function `f` which is required for the intended mapping.
+ * @Param z The variable in which the value is to be stored
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::setFunctionsForVariables(string x, string y, function<double(double, double)> f, string z) {
+    for(int i = 0 ; i < (N+1)*(N+1); i++)
+        variable[z][i] = f(variable[x][i],variable[y][i]);
+    return ;
+}
+
+/* ----------------------------------------------------------------------------*/
+/**
+ * @Synopsis  This is the function used to change the value of variable z to f(w, x, y).
+ *
+ * @Param w The first parameter of the function
+ * @Param x The second parameter of the function.
+ * @Param y The third parameter of the function.
+ * @Param functionf The function `f` which is required for the intended mapping.
+ * @Param z The variable in which the value is to be stored
+ */
+/* ----------------------------------------------------------------------------*/
+void DG_Element_2d::setFunctionsForVariables(string w, string x, string y, function<double(double, double, double)> f, string z) {
+    for(int i = 0 ; i < (N+1)*(N+1); i++)
+        variable[z][i] = f(variable[w][i],variable[x][i],variable[y][i]);
+    return ;
+}
+
+
+double DG_Element_2d::l2Norm(string v1, string v2) {
+    double* diff = new double[(N+1)*(N+1)];
+    cblas_dscal((N+1)*(N+1), 0.0, diff, 1);
+    cblas_daxpy((N+1)*(N+1),  1.0, variable[v1], 1, diff, 1);
+    cblas_daxpy((N+1)*(N+1), -1.0, variable[v2], 1, diff, 1);
+    double norm2 =  (cblas_dnrm2((N+1)*(N+1),diff, 1));    
+    delete[] diff;
+    return norm2;
 }

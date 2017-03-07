@@ -7,8 +7,12 @@
 
 using namespace std;
 
-float Q(float x, float y) {
-    return (10*x + 30*y);
+double Q(double x, double y) {
+    return (x+y*y);
+}
+
+double Q_yy_exact(double x, double y) {
+    return (2.0);
 }
 
 int main() {
@@ -16,13 +20,17 @@ int main() {
     field = new DG_Field_2d(10, 10, 16, -1.0, -1.0, 1.0, 1.0);
     
     field->addVariable_withBounary("Q");
-    field->addVariable_withBounary("Q_x");
     field->addVariable_withBounary("Q_y");
+    field->addVariable_withBounary("Q_yy");
+    field->addVariable_withoutBounary("Q_yy_exact");
     
     field->initializeVariable("Q", Q);
+    field->initializeVariable("Q_yy_exact", Q_yy_exact);
     
-    field->delByDelX("Q"  , "Q_x" , "central");
     field->delByDelY("Q"  , "Q_y" , "central");
+    field->delByDelY("Q_y" , "Q_yy", "central");
 
-    field->writeVTK("output.vtk");
+    cout << field->l2Norm("Q_yy_exact", "Q_yy") << endl;
+
+    //field->writeVTK("output.vtk");
 }

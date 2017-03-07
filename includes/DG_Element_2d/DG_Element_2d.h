@@ -93,7 +93,11 @@ public:
     // Functions to apply linear operations on the variables.
     void axpy(double a, string x, string y);
     void scal(double a, string x);
+    void setFunctionsForVariables(string x, string y, function<double(double, double)>, string z);
+    void setFunctionsForVariables(string w, string x, string y, function<double(double, double, double)>, string z);
 
+    // Functions to do various other operations on the elements.
+    double l2Norm(string v1, string v2);
 
 };
 

@@ -26,9 +26,9 @@ private:
 
 
 public:
-   vector< vector<DG_Element_2d*> > elements;
-   vector<string> variableNames; // This is stores all the variables which have been added to the field.
-   vector<string> variablesWithBoundaryInfo; // This stores all the variables whose boundary info. is also known.
+    vector< vector<DG_Element_2d*> > elements;
+    vector<string> variableNames; // This is stores all the variables which have been added to the field.
+    vector<string> variablesWithBoundaryInfo; // This stores all the variables whose boundary info. is also known.
 
     DG_Field_2d(int _nex, int _ney, int _N, double _x1, double _y1, double _x2, double _y2);
     void addVariable_withBounary(string v);
@@ -43,6 +43,12 @@ public:
     // Functions to apply linear operations on the variables.
     void axpy(double a, string x, string y);
     void scal(double a, string x);
+    void setFunctionsForVariables(string x, string y, function<double(double, double)>, string z); 
+    void setFunctionsForVariables(string w, string x, string y, function<double(double, double, double)>, string z); 
+
+
+    // Functions to give the information about the error.
+    double l2Norm(string v1, string v2);
 };
 
 #endif
