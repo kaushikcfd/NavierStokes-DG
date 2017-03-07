@@ -40,6 +40,17 @@ public:
     void setDomain(double _x1, double _y1, double _x2, double _y2);
     /* ----------------------------------------------------------------------------*/
     /**
+     * @Synopsis  This is the function to set the type of the boundary condition.
+     *
+     * @Param type This will tell the type of boundary conditions:
+     *              - "periodic"  = Periodic Boundary Condition
+     *              - "dirichlet" = Dirichlet Boundary Condition
+     *              - "neumann"   = Neumann Boundary Condition.
+     */
+    /* ----------------------------------------------------------------------------*/
+    void setBoundaryCondtions(string type);
+    /* ----------------------------------------------------------------------------*/
+    /**
      * @Synopsis This is the function used to initialize the the veclocity of the domain  
      *
      * @Param functionU This is the function used to initialize the `U` velocity as an input.

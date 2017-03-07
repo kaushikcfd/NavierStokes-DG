@@ -34,6 +34,7 @@ public:
     void addVariable_withBounary(string v);
     void addVariable_withoutBounary(string v);
     void initializeVariable(string v, function<double(double, double)>);
+    void setBoundaryConditions(string type);
     void writeVTK(string fileName);
     
     // Operators on the field.
@@ -45,7 +46,6 @@ public:
     void scal(double a, string x);
     void setFunctionsForVariables(string x, string y, function<double(double, double)>, string z); 
     void setFunctionsForVariables(string w, string x, string y, function<double(double, double, double)>, string z); 
-
 
     // Functions to give the information about the error.
     double l2Norm(string v1, string v2);

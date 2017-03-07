@@ -123,6 +123,26 @@ DG_Field_2d::DG_Field_2d(int _nex, int _ney, int _N, double _x1, double _y1, dou
     
 }
 
+void DG_Field_2d::setBoundaryConditions(string type) {
+    if(type == "periodic") {
+        // Setting the boundary for the top elements.
+        for(int i = 0; i < ne_x; i++)
+            elements[i][ne_y-1]->setNeighboringElement('T', elements[i][0]);
+
+        // Setting the boundary for the right elements.
+        for(int j=0; j < (ne_y); j++)
+            elements[ne_x-1][j]->setNeighboringElement('R', elements[0][j]);
+
+        // Setting the boundary for the bottom elements.
+        for(int i = 0; i < ne_x; i++)
+            elements[i][0]->setNeighboringElement('B', elements[i][ne_y-1]);
+
+        // Setting the boundary for the left elements..
+        for(int j=0; j < ne_y; j++)
+            elements[0][j]->setNeighboringElement('L', elements[ne_x-1][j]);
+    }
+    return ;
+}
 
 /* ----------------------------------------------------------------------------*/
 /**

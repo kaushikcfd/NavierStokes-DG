@@ -30,11 +30,17 @@ void AdvectionSolver::setInitialConditions(function<double(double, double)> I) {
     return ;
 }
 
+void AdvectionSolver::setBoundaryCondtions(string type) {
+    field->setBoundaryConditions(type);
+    return ;
+}
+
 void AdvectionSolver::setSolver(double _dt, double _no_of_time_steps) {
     dt = _dt;
     no_of_time_steps = _no_of_time_steps;
     return ;
 }
+
 
 double product(double x, double y) {
     return (x*y);
