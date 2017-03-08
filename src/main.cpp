@@ -13,12 +13,12 @@ double V(double x, double y) {
 }
 
 double initial(double x, double y) {
-    return (exp(-0.5*(x*x +  y*y)));
+    return (exp(-(x*x +  y*y)*16.0));
 }
 
 int main() {
     double dt = 1e-2;
-    int time_steps = 0;
+    int time_steps = 100;
     AdvectionSolver* a;
     a = new AdvectionSolver(10, 10, 2);
     a->setDomain(-1.0, -1.0, 1.0, 1.0);
