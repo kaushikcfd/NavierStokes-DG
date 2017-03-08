@@ -10,6 +10,8 @@
 
 #include <cmath>
 
+#define MAX(a, b)(a>b?a:b)
+
 /* ----------------------------------------------------------------------------*/
 /**
  * @Synopsis  This is the constructor which initializes the member variables of the class. It also populates the arrays
@@ -214,7 +216,7 @@ void DG_Element_2d::setNeighboringElement(char type, DG_Element_2d* neighbor) {
  * @Param fluxType  The type of flux that is to be used. eg "central"
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
+void DG_Element_2d::delByDelX(string v, string vDash, string fluxType, string fluxVariable = "") {
     double dy = (y_end - y_start);
     double dx = (x_end - x_start);
     
@@ -239,6 +241,29 @@ void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
         delete[] numericalFlux;
         delete[] auxillaryVariable;
     }
+
+    else if(fluxType == "rusanov") {
+        double* numericalFlux        =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        double* auxillaryVariable    =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        zeros(numericalFlux, (N+1)*(N+1));                                                       
+        for(int i=0; i<=N; i++){
+            numericalFlux[i*(N+1)+N] = 0.5*(*boundaryRight[v][i] + *neighboringRight[v][i] + MAX(fabs(*boundaryRight[fluxVariable][i]), fabs(*neighboringRight[fluxVariable][i]))*(*boundaryRight[v][i] - *neighboringRight[v][i])  ) ;   
+            numericalFlux[i*(N+1)]   = 0.5*(*boundaryLeft[v][i]  + *neighboringLeft[v][i]  - MAX(fabs(*boundaryLeft[fluxVariable][i]), fabs(*neighboringLeft[fluxVariable][i]))*(*boundaryLeft[v][i] - *neighboringLeft[v][i])  ) ;   
+        }
+        /// vDash = -0.5*dy*D*v
+        cblas_dgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dy, derivativeMatrix_x, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+
+        /// Adding the numeical Flux terms as necessary.
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dy, fluxMatrix_right,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dy, fluxMatrix_left,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+
+        /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+
+        delete[] numericalFlux;
+        delete[] auxillaryVariable;
+
+    }
     return ;
 }
 
@@ -253,7 +278,7 @@ void DG_Element_2d::delByDelX(string v, string vDash, string fluxType) {
  * @Param fluxType  The type of flux that is to be used. eg "central"
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Element_2d::delByDelY(string v, string vDash, string fluxType) {
+void DG_Element_2d::delByDelY(string v, string vDash, string fluxType, string fluxVariable = "") {
     double dy = (y_end - y_start);
     double dx = (x_end - x_start);
 
@@ -264,6 +289,28 @@ void DG_Element_2d::delByDelY(string v, string vDash, string fluxType) {
         for(int i=0; i<=N; i++){
             numericalFlux[N*(N+1)+i]    = 0.5*( *boundaryTop[v][i]    + *neighboringTop[v][i] ) ;   
             numericalFlux[i]            = 0.5*( *boundaryBottom[v][i]     + *neighboringBottom[v][i] ) ;  
+        }
+        /// vDash = -0.5*dy*D*v
+        cblas_dgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dx, derivativeMatrix_y, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);
+
+        /// Adding the numeical Flux terms as necessary.
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  0.5*dx, fluxMatrix_top,   (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1),  -0.5*dx, fluxMatrix_bottom,    (N+1)*(N+1), numericalFlux, 1, 1, auxillaryVariable, 1);
+
+        /// Multiplying my Mass Inverse, this is the final step in getting the derivative.
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, (N+1)*(N+1),(N+1)*(N+1), 4.0/(dx*dy), inverseMassMatrix,(N+1)*(N+1), auxillaryVariable,1,0,variable[vDash],1);
+
+        delete[] numericalFlux;
+        delete[] auxillaryVariable;
+    }
+    
+    else if(fluxType == "rusanov") {
+        double* numericalFlux        =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable.
+        double* auxillaryVariable    =   new double[(N+1)*(N+1)]; /// Creating a temporary new variable, auxiallary variable
+        zeros(numericalFlux, (N+1)*(N+1));                                                       
+        for(int i=0; i<=N; i++){
+            numericalFlux[N*(N+1)+i]= 0.5*(*boundaryTop[v][i] + *neighboringTop[v][i] + MAX(fabs(*boundaryTop[fluxVariable][i]), fabs(*neighboringTop[fluxVariable][i]))*(*boundaryTop[v][i] - *neighboringTop[v][i]));
+            numericalFlux[i]        = 0.5*(*boundaryBottom[v][i] + *neighboringBottom[v][i] - MAX(fabs(*boundaryBottom[fluxVariable][i]), fabs(*neighboringBottom[fluxVariable][i]))*(*boundaryBottom[v][i] - *neighboringBottom[v][i])); 
         }
         /// vDash = -0.5*dy*D*v
         cblas_dgemv(CblasRowMajor, CblasTrans,   (N+1)*(N+1), (N+1)*(N+1), -0.5*dx, derivativeMatrix_y, (N+1)*(N+1), variable[v],   1, 0, auxillaryVariable, 1);

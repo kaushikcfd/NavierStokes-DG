@@ -77,8 +77,9 @@ public:
     void setVariableNeighbors(string v);
 
     // Functions for various operations on the variables.
-    void delByDelX(string v, string vDash, string fluxType);
-    void delByDelY(string v, string vDash, string fluxType);
+    void delByDelX(string v, string vDash, string fluxType, string fluxVariable);
+
+    void delByDelY(string v, string vDash, string fluxType, string fluxVariable);
 
     // Functions to set the various operator matrices.
     void setMassMatrix(double* m);

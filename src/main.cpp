@@ -1,36 +1,31 @@
-#include "../includes/DG_Field_2d/DG_Field_2d.h"
-#include "../includes/Utilities/DerivativeMatrix.h"
-#include "../includes/Utilities/MassMatrix.h"
-#include "../includes/Utilities/FluxMatrix.h"
+#include "../includes/Solvers/AdvectionSolver.h"
 #include <iostream>
 #include <cmath>
 
 using namespace std;
 
-double Q(double x, double y) {
-    return (x+y*y);
+double U(double x, double y) {
+    return 1.0;
 }
 
-double Q_yy_exact(double x, double y) {
-    return (2.0);
+double V(double x, double y) {
+    return 0.0;
+}
+
+double initial(double x, double y) {
+    return (exp(-0.5*(x*x +  y*y)));
 }
 
 int main() {
-    DG_Field_2d* field;
-    field = new DG_Field_2d(10, 10, 16, -1.0, -1.0, 1.0, 1.0);
-    
-    field->addVariable_withBounary("Q");
-    field->addVariable_withBounary("Q_y");
-    field->addVariable_withBounary("Q_yy");
-    field->addVariable_withoutBounary("Q_yy_exact");
-    
-    field->initializeVariable("Q", Q);
-    field->initializeVariable("Q_yy_exact", Q_yy_exact);
-    
-    field->delByDelY("Q"  , "Q_y" , "central");
-    field->delByDelY("Q_y" , "Q_yy", "central");
-
-    cout << field->l2Norm("Q_yy_exact", "Q_yy") << endl;
-
-    //field->writeVTK("output.vtk");
+    double dt = 1e-2;
+    int time_steps = 0;
+    AdvectionSolver* a;
+    a = new AdvectionSolver(10, 10, 2);
+    a->setDomain(-1.0, -1.0, 1.0, 1.0);
+    a->setVelocity(U, V);
+    a->setInitialConditions(initial);
+    a->setBoundaryCondtions("periodic");
+    a->setSolver(dt, time_steps);
+    a->solve();
+    a->plot("output.vtk");
 }

@@ -284,10 +284,10 @@ void DG_Field_2d::writeVTK(string fileName){
  * @Param fluxType The numerical flux type which is to be implemented while computing the derivative.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Field_2d::delByDelX(string v, string vDash, string fluxType) {
+void DG_Field_2d::delByDelX(string v, string vDash, string fluxType, string fluxVariable = "") {
     for(int i = 0; i < ne_x; i++ )
         for(int j = 0; j < ne_y; j++)
-            elements[i][j]->delByDelX(v, vDash, fluxType);
+            elements[i][j]->delByDelX(v, vDash, fluxType, fluxVariable);
 
     return ;
 }
@@ -301,10 +301,10 @@ void DG_Field_2d::delByDelX(string v, string vDash, string fluxType) {
  * @Param fluxType The numerical flux type which is to be implemented while computing the derivative.
  */
 /* ----------------------------------------------------------------------------*/
-void DG_Field_2d::delByDelY(string v, string vDash, string fluxType) {
+void DG_Field_2d::delByDelY(string v, string vDash, string fluxType, string fluxVariable = "") {
     for(int i = 0; i < ne_x; i++ )
         for(int j = 0; j < ne_y; j++)
-            elements[i][j]->delByDelY(v, vDash, fluxType);
+            elements[i][j]->delByDelY(v, vDash, fluxType, fluxVariable);
 
     return ;
 }

@@ -38,8 +38,9 @@ public:
     void writeVTK(string fileName);
     
     // Operators on the field.
-    void delByDelX(string v, string vDash, string fluxType);
-    void delByDelY(string v, string vDash, string fluxType);
+    void delByDelX(string v, string vDash, string fluxType, string fluxVariable);
+
+    void delByDelY(string v, string vDash, string fluxType, string fluxVariable);
 
     // Functions to apply linear operations on the variables.
     void axpy(double a, string x, string y);
